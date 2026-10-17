@@ -1,0 +1,39 @@
+{
+  "name": "fusumivietnam/bepduc",
+  "description": "Reproducible public WordPress plugin dependencies for bepduc.com.",
+  "type": "project",
+  "license": "proprietary",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org",
+      "only": [
+        "wpackagist-plugin/*",
+        "wpackagist-theme/*"
+      ]
+    }
+  ],
+  "require": {
+    "composer/installers": "2.3.0",
+    "wpackagist-plugin/fluent-smtp": "2.4.1",
+    "wpackagist-plugin/seo-by-rank-math": "1.0.280",
+    "wpackagist-plugin/woocommerce": "11.2.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    },
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "extra": {
+    "installer-paths": {
+      "wp-content/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "wp-content/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    }
+  }
+}

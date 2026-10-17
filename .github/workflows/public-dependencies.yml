@@ -1,0 +1,62 @@
+name: Validate public plugin dependencies
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'scripts/public-plugins/**'
+      - '.github/workflows/public-dependencies.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'scripts/public-plugins/**'
+      - '.github/workflows/public-dependencies.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Resolve dependency lock when missing
+        run: |
+          if [[ ! -f composer.lock ]]; then
+            composer update --no-install --no-interaction --no-progress --prefer-dist
+          fi
+
+      - name: Install public plugins
+        run: bash scripts/public-plugins/install.sh
+
+      - name: Verify versions and Git boundaries
+        run: bash scripts/public-plugins/verify.sh
+
+      - name: Verify expected WordPress plugin entrypoints
+        run: |
+          test -f wp-content/plugins/woocommerce/woocommerce.php
+          test -f wp-content/plugins/seo-by-rank-math/rank-math.php
+          test -f wp-content/plugins/fluent-smtp/fluent-smtp.php
+
+      - name: Upload resolved lock
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: composer-lock
+          path: composer.lock
+          if-no-files-found: error
+          retention-days: 1
