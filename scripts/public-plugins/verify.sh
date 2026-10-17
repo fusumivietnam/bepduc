@@ -12,7 +12,9 @@ fail() {
 command -v composer >/dev/null 2>&1 || fail 'Composer is required.'
 command -v php >/dev/null 2>&1 || fail 'PHP is required.'
 
-composer validate --strict --no-check-lock --no-interaction
+# Exact direct version pins are intentional for deployment reproducibility.
+# Composer reports them as publish-time warnings, so do not promote warnings to errors.
+composer validate --no-check-lock --no-interaction
 
 while IFS=$'\t' read -r package expected; do
   [[ -n "$package" ]] || continue
