@@ -61,6 +61,22 @@ R2_SECRET_ACCESS_KEY
 
 Use credentials scoped to the premium-artifact bucket/prefix only. Do not use a global Cloudflare API token.
 
+## Publish an artifact
+
+```bash
+bash scripts/premium/publish.sh acf-pro 6.4.2 /path/to/acf-pro.zip
+```
+
+The publish helper:
+
+1. validates the slug and local ZIP;
+2. calculates SHA256;
+3. refuses to overwrite an existing versioned R2 object;
+4. uploads to the standard immutable key;
+5. prints the manifest entry to review and commit.
+
+It intentionally does **not** edit `config/premium-plugins.json` automatically. The version bump remains an explicit Git review step.
+
 ## Fetch and verify
 
 ```bash
@@ -83,13 +99,12 @@ Installation always verifies artifacts first.
 ## Upgrade process
 
 1. Obtain the new plugin ZIP from the licensed vendor.
-2. Calculate SHA256 locally.
-3. Upload ZIP to a **new immutable R2 key**.
-4. Update `config/premium-plugins.json` in a PR.
-5. CI validates the manifest.
-6. Test the new version on staging.
-7. Merge the approved version bump.
-8. Deploy to production.
+2. Run `publish.sh` to calculate SHA256 and upload to a **new immutable R2 key**.
+3. Add/update the printed entry in `config/premium-plugins.json` through a PR.
+4. CI validates the manifest and scripts.
+5. Test the new version on staging.
+6. Merge the approved version bump.
+7. Deploy to production.
 
 Do not auto-update premium plugins on production independently of the manifest.
 
