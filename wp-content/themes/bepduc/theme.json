@@ -1,0 +1,139 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "useRootPaddingAwareAlignments": true,
+    "layout": {
+      "contentSize": "1280px",
+      "wideSize": "1440px"
+    },
+    "color": {
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "palette": [
+        { "slug": "canvas", "name": "Canvas", "color": "#F7F4EE" },
+        { "slug": "surface", "name": "Surface", "color": "#FFFFFF" },
+        { "slug": "ink", "name": "Ink", "color": "#181714" },
+        { "slug": "muted", "name": "Muted", "color": "#6F6B63" },
+        { "slug": "border", "name": "Border", "color": "#DED9D0" },
+        { "slug": "accent", "name": "Accent", "color": "#9D1F24" },
+        { "slug": "accent-dark", "name": "Accent Dark", "color": "#74171B" },
+        { "slug": "success", "name": "Success", "color": "#2F6B4F" }
+      ]
+    },
+    "spacing": {
+      "blockGap": true,
+      "units": ["px", "rem", "%", "vw", "vh"],
+      "spacingSizes": [
+        { "slug": "1", "name": "4", "size": "0.25rem" },
+        { "slug": "2", "name": "8", "size": "0.5rem" },
+        { "slug": "3", "name": "12", "size": "0.75rem" },
+        { "slug": "4", "name": "16", "size": "1rem" },
+        { "slug": "5", "name": "24", "size": "1.5rem" },
+        { "slug": "6", "name": "32", "size": "2rem" },
+        { "slug": "7", "name": "48", "size": "3rem" },
+        { "slug": "8", "name": "64", "size": "4rem" },
+        { "slug": "9", "name": "96", "size": "6rem" }
+      ]
+    },
+    "typography": {
+      "fluid": true,
+      "defaultFontSizes": false,
+      "fontFamilies": [
+        {
+          "slug": "sans",
+          "name": "System Sans",
+          "fontFamily": "Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "xs", "name": "XS", "size": "0.75rem" },
+        { "slug": "sm", "name": "SM", "size": "0.875rem" },
+        { "slug": "base", "name": "Base", "size": "1rem" },
+        { "slug": "lg", "name": "LG", "size": "1.125rem" },
+        { "slug": "xl", "name": "XL", "size": "1.5rem" },
+        { "slug": "2xl", "name": "2XL", "size": "2rem" },
+        { "slug": "3xl", "name": "3XL", "size": "3rem" },
+        { "slug": "4xl", "name": "4XL", "size": "4rem" }
+      ]
+    },
+    "border": {
+      "radius": true
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var:preset|color|canvas",
+      "text": "var:preset|color|ink"
+    },
+    "spacing": {
+      "blockGap": "var:preset|spacing|5",
+      "padding": {
+        "left": "var:preset|spacing|5",
+        "right": "var:preset|spacing|5"
+      }
+    },
+    "typography": {
+      "fontFamily": "var:preset|font-family|sans",
+      "fontSize": "var:preset|font-size|base",
+      "lineHeight": "1.55"
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontWeight": "600",
+          "lineHeight": "1.15"
+        }
+      },
+      "link": {
+        "color": {
+          "text": "var:preset|color|accent"
+        },
+        ":hover": {
+          "color": {
+            "text": "var:preset|color|accent-dark"
+          }
+        }
+      },
+      "button": {
+        "border": {
+          "radius": "4px"
+        },
+        "color": {
+          "background": "var:preset|color|accent",
+          "text": "var:preset|color|surface"
+        },
+        "spacing": {
+          "padding": {
+            "top": "0.75rem",
+            "right": "1.25rem",
+            "bottom": "0.75rem",
+            "left": "1.25rem"
+          }
+        },
+        "typography": {
+          "fontSize": "var:preset|font-size|sm",
+          "fontWeight": "600"
+        },
+        ":hover": {
+          "color": {
+            "background": "var:preset|color|accent-dark"
+          }
+        }
+      }
+    },
+    "blocks": {
+      "core/navigation": {
+        "typography": {
+          "fontSize": "var:preset|font-size|sm",
+          "fontWeight": "500"
+        }
+      }
+    }
+  },
+  "templateParts": [
+    { "name": "header", "title": "Header", "area": "header" },
+    { "name": "footer", "title": "Footer", "area": "footer" }
+  ]
+}

@@ -10,8 +10,17 @@ wp-content/cache/
 wp-content/upgrade/
 wp-content/backups/
 wp-content/ai1wm-backups/
+wp-content/languages/
 
-# Third-party dependencies
+# WordPress third-party code is installed reproducibly, not committed.
+wp-content/plugins/*
+!wp-content/plugins/bepduc-core/
+!wp-content/plugins/bepduc-core/**
+wp-content/themes/*
+!wp-content/themes/bepduc/
+!wp-content/themes/bepduc/**
+
+# Build/runtime dependencies
 node_modules/
 vendor/
 

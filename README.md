@@ -6,14 +6,20 @@ Repository for the bepduc.com WordPress + WooCommerce platform.
 
 - WordPress owns content.
 - WooCommerce owns commerce.
-- `bepduc` theme owns presentation.
+- `bepduc` custom block theme owns presentation.
 - `bepduc-core` owns project-specific domain logic.
 - GitHub is the source of truth for code, dependency manifests, technical decisions and project history.
 - Runtime/business data stays in WordPress/WooCommerce databases and infrastructure storage.
 
-## Repository status
+## Application source
 
-Foundation phase. WordPress theme and `bepduc-core` scaffolds will be added after repository and dependency infrastructure are in place.
+- Theme: `wp-content/themes/bepduc/`
+- Domain plugin: `wp-content/plugins/bepduc-core/`
+- Premium dependency manifest: `config/premium-plugins.json`
+
+WordPress core and third-party plugin/theme sources are intentionally not committed.
+
+See `docs/DEVELOPMENT.md` for local/staging setup assumptions.
 
 ## Premium plugins
 
