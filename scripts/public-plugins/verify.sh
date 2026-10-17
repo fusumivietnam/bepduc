@@ -13,9 +13,10 @@ command -v composer >/dev/null 2>&1 || fail 'Composer is required.'
 command -v php >/dev/null 2>&1 || fail 'PHP is required.'
 [[ -f composer.lock ]] || fail 'composer.lock must be committed.'
 
-# Exact direct version pins are intentional. They are publish-time warnings,
-# not application validation failures. Lock consistency remains strict.
-composer validate --strict --no-check-publish --no-interaction
+# Exact direct version pins are intentional. Composer may warn about exact
+# constraints for publishable packages, but this project deliberately requires
+# explicit reviewed upgrades. Composer still checks schema and lock consistency.
+composer validate --no-check-publish --no-interaction
 
 while IFS=$'\t' read -r package expected; do
   [[ -n "$package" ]] || continue
