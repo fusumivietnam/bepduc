@@ -31,4 +31,4 @@ jobs:
         run: bash -n scripts/premium/*.sh
 
       - name: ShellCheck
-        run: shellcheck scripts/premium/*.sh
+        run: shellcheck -x -P scripts/premium scripts/premium/*.sh
