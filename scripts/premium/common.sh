@@ -2,7 +2,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+# shellcheck disable=SC2034
 MANIFEST_PATH="${PREMIUM_MANIFEST:-$ROOT_DIR/config/premium-plugins.json}"
+# shellcheck disable=SC2034
 ARTIFACT_DIR="${PREMIUM_ARTIFACT_DIR:-$ROOT_DIR/.cache/premium-plugins}"
 
 fail() {
@@ -53,7 +55,9 @@ sha256_file() {
 verify_sha256() {
   local file="$1"
   local expected="$2"
-  local actual
+  local actual actual_norm expected_norm
   actual="$(sha256_file "$file")"
-  [[ "${actual,,}" == "${expected,,}" ]] || fail "SHA256 mismatch for $file (expected $expected, got $actual)"
+  actual_norm="$(printf '%s' "$actual" | tr '[:upper:]' '[:lower:]')"
+  expected_norm="$(printf '%s' "$expected" | tr '[:upper:]' '[:lower:]')"
+  [[ "$actual_norm" == "$expected_norm" ]] || fail "SHA256 mismatch for $file (expected $expected, got $actual)"
 }
