@@ -1,0 +1,34 @@
+name: Validate repository
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install manifest validator
+        run: python -m pip install --disable-pip-version-check check-jsonschema
+
+      - name: Validate premium plugin manifest
+        run: check-jsonschema --schemafile config/premium-plugins.schema.json config/premium-plugins.json
+
+      - name: Check shell syntax
+        run: bash -n scripts/premium/*.sh
+
+      - name: ShellCheck
+        run: shellcheck scripts/premium/*.sh
