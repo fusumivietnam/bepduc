@@ -34,16 +34,13 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - name: Resolve dependency lock when missing
-        run: |
-          if [[ ! -f composer.lock ]]; then
-            composer update --no-install --no-interaction --no-progress --prefer-dist
-          fi
+      - name: Require committed lock file
+        run: test -f composer.lock
 
-      - name: Install public plugins
+      - name: Install public plugins from lock
         run: bash scripts/public-plugins/install.sh
 
-      - name: Verify versions and Git boundaries
+      - name: Verify versions, lock and Git boundaries
         run: bash scripts/public-plugins/verify.sh
 
       - name: Verify expected WordPress plugin entrypoints
@@ -51,12 +48,3 @@ jobs:
           test -f wp-content/plugins/woocommerce/woocommerce.php
           test -f wp-content/plugins/seo-by-rank-math/rank-math.php
           test -f wp-content/plugins/fluent-smtp/fluent-smtp.php
-
-      - name: Upload resolved lock
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: composer-lock
-          path: composer.lock
-          if-no-files-found: error
-          retention-days: 1
