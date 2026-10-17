@@ -2,6 +2,7 @@
   "name": "fusumivietnam/bepduc",
   "description": "Reproducible public WordPress plugin dependencies for bepduc.com.",
   "type": "project",
+  "license": "proprietary",
   "repositories": [
     {
       "type": "composer",
