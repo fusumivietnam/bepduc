@@ -1,0 +1,28 @@
+# Secrets / environment
+.env
+.env.*
+!.env.example
+wp-config.php
+
+# Runtime / generated WordPress data
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backups/
+wp-content/ai1wm-backups/
+
+# Third-party dependencies
+node_modules/
+vendor/
+
+# Local tooling
+.DS_Store
+.idea/
+.vscode/
+*.log
+*.sql
+*.sql.gz
+
+# Premium plugin binaries / private artifacts
+private-artifacts/
+*.premium.zip
