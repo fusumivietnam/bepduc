@@ -1,0 +1,79 @@
+name: WordPress activation smoke test
+
+on:
+  pull_request:
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - 'wp-content/plugins/bepduc-core/**'
+      - '.github/workflows/wordpress-smoke.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - 'wp-content/plugins/bepduc-core/**'
+      - '.github/workflows/wordpress-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install WP-CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /tmp/wp-cli.phar
+          php /tmp/wp-cli.phar --info
+          chmod +x /tmp/wp-cli.phar
+          sudo mv /tmp/wp-cli.phar /usr/local/bin/wp
+
+      - name: Install WordPress
+        run: |
+          wp core download --path=/tmp/wordpress --allow-root
+          wp config create \
+            --path=/tmp/wordpress \
+            --dbname=wordpress \
+            --dbuser=root \
+            --dbpass=root \
+            --dbhost=127.0.0.1:3306 \
+            --skip-check \
+            --allow-root
+          wp core install \
+            --path=/tmp/wordpress \
+            --url=http://localhost \
+            --title='Bepduc smoke test' \
+            --admin_user=admin \
+            --admin_password='smoke-test-only' \
+            --admin_email=devnull@example.com \
+            --skip-email \
+            --allow-root
+
+      - name: Install project theme and plugin
+        run: |
+          cp -R wp-content/themes/bepduc /tmp/wordpress/wp-content/themes/bepduc
+          cp -R wp-content/plugins/bepduc-core /tmp/wordpress/wp-content/plugins/bepduc-core
+
+      - name: Activate project theme and plugin
+        run: |
+          wp theme activate bepduc --path=/tmp/wordpress --allow-root
+          wp plugin activate bepduc-core --path=/tmp/wordpress --allow-root
+          wp theme status bepduc --path=/tmp/wordpress --allow-root
+          wp plugin status bepduc-core --path=/tmp/wordpress --allow-root
