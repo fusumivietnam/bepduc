@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bepduc.com/schemas/premium-plugins.schema.json",
+  "title": "Bepduc premium plugin manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plugins"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "version", "r2_key", "sha256", "enabled", "activate"],
+        "properties": {
+          "slug": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "version": {"type": "string", "minLength": 1},
+          "r2_key": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+          "enabled": {"type": "boolean"},
+          "activate": {"type": "boolean"},
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  }
+}
