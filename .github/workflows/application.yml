@@ -1,0 +1,43 @@
+name: Validate application
+
+on:
+  pull_request:
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - 'wp-content/plugins/bepduc-core/**'
+      - 'docs/DEVELOPMENT.md'
+      - '.github/workflows/application.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - 'wp-content/plugins/bepduc-core/**'
+      - 'docs/DEVELOPMENT.md'
+      - '.github/workflows/application.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify scaffold files
+        run: |
+          test -f wp-content/themes/bepduc/style.css
+          test -f wp-content/themes/bepduc/theme.json
+          test -f wp-content/themes/bepduc/templates/index.html
+          test -f wp-content/plugins/bepduc-core/bepduc-core.php
+
+      - name: Validate theme.json
+        run: python -m json.tool wp-content/themes/bepduc/theme.json >/dev/null
+
+      - name: Lint PHP
+        run: |
+          find wp-content/themes/bepduc wp-content/plugins/bepduc-core \
+            -type f -name '*.php' -print0 \
+            | xargs -0 -n1 php -l
