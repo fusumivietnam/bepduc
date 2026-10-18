@@ -31,6 +31,7 @@ require_once get_theme_file_path('inc/product-brand.php');
 require_once get_theme_file_path('inc/catalogue-query.php');
 require_once get_theme_file_path('inc/catalogue-filters.php');
 require_once get_theme_file_path('inc/product-detail.php');
+require_once get_theme_file_path('inc/product-compare.php');
 
 /**
  * Enqueue light catalogue styling only on WooCommerce product archives.
