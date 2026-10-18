@@ -8,7 +8,7 @@
   "login": true,
   "siteOptions": {
     "blogname": "Bếp Đức — Demo (dữ liệu giả lập)",
-    "blog_public": 0,
+    "blog_public": "0",
     "woocommerce_currency": "VND"
   },
   "steps": [
