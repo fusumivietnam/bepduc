@@ -11,6 +11,7 @@ The catalogue is rendered with **WooCommerce Product Collection blocks** and a s
 - `wp-content/themes/bepduc/patterns/catalogue-results.php`: shared price/stock/brand filtering, native sorting, Product Collection query, pagination and empty state.
 - `wp-content/themes/bepduc/patterns/product-card.php`: one Product Card composition reused through nested `wp:pattern` inside the shared results pattern.
 - `wp-content/themes/bepduc/inc/product-brand.php`: presentation-only dynamic block reading native `product_brand` terms from the product context; no separate brand storage.
+- `wp-content/themes/bepduc/inc/catalogue-query.php`: narrow `render_block_data` adjustment so Woo Product Collection uses a product query on Page-routed `shop`; taxonomy archives continue inheriting their native Woo queries.
 - `wp-content/themes/bepduc/assets/css/catalogue.css`: responsive layout, tokens and accessible focus styles.
 
 ## Rendering contract
