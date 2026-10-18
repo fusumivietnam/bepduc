@@ -36,6 +36,7 @@ final class Command
         $newVariants = 0;
         foreach ($data['products'] as $row) {
             $id = wc_get_product_id_by_sku($row['sku']);
+            $needsVariableSync = !$id;
             if ($id) {
                 $skipped++;
             } else {
@@ -87,8 +88,11 @@ final class Command
                     $child->update_meta_data('_bd_demo_fixture_hash', $this->hash($childRow));
                     $child->save();
                     $newVariants++;
+                    $needsVariableSync = true;
                 }
-                \WC_Product_Variable::sync((int) $id);
+                if ($needsVariableSync) {
+                    \WC_Product_Variable::sync((int) $id);
+                }
             }
         }
         $this->assertRecords($data);
