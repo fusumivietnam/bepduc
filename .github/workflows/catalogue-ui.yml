@@ -150,6 +150,15 @@ jobs:
               exit 1
             fi
           done
+          curl -fsSG --data-urlencode 'bd_brand=demo-atelier' http://127.0.0.1:8017/shop/ -o /tmp/brand.html
+          curl -fsSG --data-urlencode 'bd_stock=outofstock' http://127.0.0.1:8017/shop/ -o /tmp/stock.html
+          curl -fsSG --data-urlencode 'bd_min=100000000' http://127.0.0.1:8017/shop/ -o /tmp/min-price.html
+          curl -fsSG --data-urlencode 'bd_sort=price-desc' http://127.0.0.1:8017/shop/ -o /tmp/sort.html
+          grep -q 'product_brand-demo-atelier' /tmp/brand.html
+          if grep -q 'product_brand-demo-studio' /tmp/brand.html; then exit 1; fi
+          grep -q 'outofstock' /tmp/stock.html
+          if grep -q 'bd-product-card' /tmp/min-price.html; then exit 1; fi
+          grep -q 'bd-product-card' /tmp/sort.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
