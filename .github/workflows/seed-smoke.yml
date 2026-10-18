@@ -1,0 +1,125 @@
+name: WooCommerce demo product seed
+
+on:
+  pull_request:
+    paths:
+      - 'wp-content/plugins/bepduc-core/src/Seed/**'
+      - 'wp-content/plugins/bepduc-core/config/demo-products.json'
+      - 'wp-content/plugins/bepduc-core/src/Plugin.php'
+      - 'wp-content/plugins/bepduc-core/src/Catalog/**'
+      - 'wp-content/plugins/bepduc-core/config/catalog.json'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/seed-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'wp-content/plugins/bepduc-core/src/Seed/**'
+      - 'wp-content/plugins/bepduc-core/config/demo-products.json'
+      - 'wp-content/plugins/bepduc-core/src/Plugin.php'
+      - 'wp-content/plugins/bepduc-core/src/Catalog/**'
+      - 'wp-content/plugins/bepduc-core/config/catalog.json'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/seed-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Check JSON fixtures and install pinned WooCommerce
+        run: |
+          python -m json.tool wp-content/plugins/bepduc-core/config/demo-products.json >/dev/null
+          python -m json.tool wp-content/plugins/bepduc-core/config/catalog.json >/dev/null
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
+
+      - name: Install WP-CLI and isolated WordPress
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /tmp/wp-cli.phar
+          chmod +x /tmp/wp-cli.phar
+          sudo mv /tmp/wp-cli.phar /usr/local/bin/wp
+          wp core download --path=/tmp/wordpress --allow-root
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306 --skip-check --allow-root
+          wp config set WP_ENVIRONMENT_TYPE local --type=constant --path=/tmp/wordpress --allow-root
+          wp core install --path=/tmp/wordpress --url=http://localhost --title='Seed integration test' --admin_user=admin --admin_password='ci-test-only' --admin_email=devnull@example.com --skip-email --allow-root
+          cp -R wp-content/plugins/bepduc-core /tmp/wordpress/wp-content/plugins/bepduc-core
+          cp -R wp-content/plugins/woocommerce /tmp/wordpress/wp-content/plugins/woocommerce
+          wp plugin activate woocommerce bepduc-core --path=/tmp/wordpress --allow-root
+
+      - name: Test first import and idempotent second import
+        run: |
+          set -euo pipefail
+          wp bepduc catalog sync --path=/tmp/wordpress --allow-root
+          wp bepduc catalog verify --path=/tmp/wordpress --allow-root
+          if wp bepduc seed verify --path=/tmp/wordpress --allow-root; then
+            echo "Unexpected seed verify success before seeding"
+            exit 1
+          fi
+          wp bepduc seed products --path=/tmp/wordpress --allow-root
+          wp bepduc seed verify --path=/tmp/wordpress --allow-root
+          wp bepduc seed products --path=/tmp/wordpress --allow-root
+          wp bepduc seed verify --path=/tmp/wordpress --allow-root
+          test "$(wp post list --post_type=product --format=count --path=/tmp/wordpress --allow-root)" = 24
+          test "$(wp post list --post_type=product_variation --post_status=publish --format=count --path=/tmp/wordpress --allow-root)" = 2
+
+      - name: Test currency-neutral fixtures, brand taxonomy and variation attributes
+        run: |
+          wp eval '
+            $simple = wc_get_product(wc_get_product_id_by_sku("BD-DEMO-002"));
+            $out = wc_get_product(wc_get_product_id_by_sku("BD-DEMO-006"));
+            $hidden = wc_get_product(wc_get_product_id_by_sku("BD-DEMO-017"));
+            $variable = wc_get_product(wc_get_product_id_by_sku("BD-DEMO-024"));
+            $child = wc_get_product(wc_get_product_id_by_sku("BD-DEMO-024-BLK"));
+            if (!$simple->is_on_sale() || $out->is_in_stock()
+                || $hidden->get_catalog_visibility() !== "hidden"
+                || !$variable->is_type("variable") || !$child->is_type("variation")
+                || !has_term("demo-studio", "product_brand", $simple->get_id())) {
+                exit(1);
+            }
+          ' --path=/tmp/wordpress --allow-root
+
+      - name: Reject production writes and unmanaged SKU hijack
+        run: |
+          set -euo pipefail
+          wp config set WP_ENVIRONMENT_TYPE production --type=constant --path=/tmp/wordpress --allow-root
+          if wp bepduc seed products --path=/tmp/wordpress --allow-root; then
+            echo "CRITICAL: demo seed was allowed in production"
+            exit 1
+          fi
+          wp config set WP_ENVIRONMENT_TYPE local --type=constant --path=/tmp/wordpress --allow-root
+          wp eval '
+            $id = wc_get_product_id_by_sku("BD-DEMO-001");
+            delete_post_meta($id, "_bd_demo_fixture");
+          ' --path=/tmp/wordpress --allow-root
+          if wp bepduc seed products --path=/tmp/wordpress --allow-root; then
+            echo "CRITICAL: unmanaged existing SKU was overwritten"
+            exit 1
+          fi
+          test "$(wp post list --post_type=product --format=count --path=/tmp/wordpress --allow-root)" = 24

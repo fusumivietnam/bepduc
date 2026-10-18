@@ -24,6 +24,9 @@ final class Plugin
             require_once BEPDUC_CORE_DIR . 'src/Catalog/Schema.php';
             require_once BEPDUC_CORE_DIR . 'src/Catalog/Command.php';
             \WP_CLI::add_command('bepduc catalog', \Bepduc\Core\Catalog\Command::class);
+            require_once BEPDUC_CORE_DIR . 'src/Seed/Manifest.php';
+            require_once BEPDUC_CORE_DIR . 'src/Seed/Command.php';
+            \WP_CLI::add_command('bepduc seed', \Bepduc\Core\Seed\Command::class);
         }
     }
 
