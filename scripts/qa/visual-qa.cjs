@@ -11,6 +11,7 @@ const viewports = [
   { name: 'desktop-1280', width: 1280, height: 900 },
 ];
 const urls = [
+  { name: 'home', route: '/', selector: '.bd-home' },
   { name: 'shop', route: '/shop/', selector: '.bd-catalogue-page' },
   { name: 'compare', route: '/so-sanh/', selector: '.bd-compare' },
   { name: 'advisor', route: '/tu-van-chon-bep/', selector: '.bd-advisor' },

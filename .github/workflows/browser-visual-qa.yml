@@ -63,11 +63,14 @@ jobs:
           wp option update woocommerce_currency VND --path=/tmp/wordpress --allow-root
           wp bepduc catalog sync --path=/tmp/wordpress --allow-root
           wp bepduc seed products --path=/tmp/wordpress --allow-root
-          for slug in shop so-sanh tu-van-chon-bep; do
+          for slug in shop so-sanh tu-van-chon-bep trang-chu; do
             wp post create --post_type=page --post_status=publish --post_name="$slug" --post_title="$slug" --path=/tmp/wordpress --allow-root
           done
           SHOP_ID="$(wp post list --post_type=page --name=shop --field=ID --path=/tmp/wordpress --allow-root)"
           wp option update woocommerce_shop_page_id "$SHOP_ID" --path=/tmp/wordpress --allow-root
+          FRONT_ID="$(wp post list --post_type=page --name=trang-chu --field=ID --path=/tmp/wordpress --allow-root)"
+          wp option update show_on_front page --path=/tmp/wordpress --allow-root
+          wp option update page_on_front "$FRONT_ID" --path=/tmp/wordpress --allow-root
           wp rewrite flush --hard --path=/tmp/wordpress --allow-root
       - name: Install Playwright Chromium
         run: |
