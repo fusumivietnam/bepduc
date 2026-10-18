@@ -56,8 +56,13 @@ function bepduc_catalogue_filter_values(): array
  */
 function bepduc_catalogue_apply_filters(array $query, WP_Block $block): array
 {
-    // Only a product Query Loop qualifies; unrelated WordPress queries are untouched.
-    if (($query['post_type'] ?? '') !== 'product') {
+    // Limit the behavior to product loops on real WooCommerce catalogue pages.
+    $shop_id = function_exists('wc_get_page_id') ? wc_get_page_id('shop') : -1;
+    $catalogue_request = ($shop_id > 0 && (is_page($shop_id) || get_queried_object_id() === $shop_id))
+        || (function_exists('is_shop') && is_shop())
+        || is_post_type_archive('product')
+        || is_tax(['product_cat', 'product_brand']);
+    if (! $catalogue_request || ($query['post_type'] ?? '') !== 'product') {
         return $query;
     }
 
