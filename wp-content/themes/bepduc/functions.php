@@ -32,6 +32,7 @@ require_once get_theme_file_path('inc/catalogue-query.php');
 require_once get_theme_file_path('inc/catalogue-filters.php');
 require_once get_theme_file_path('inc/product-detail.php');
 require_once get_theme_file_path('inc/product-compare.php');
+require_once get_theme_file_path('inc/buying-advisor.php');
 
 /**
  * Enqueue light catalogue styling only on WooCommerce product archives.
@@ -74,3 +75,15 @@ function bepduc_compare_assets(): void
     wp_enqueue_style('bepduc-product-compare', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
 }
 add_action('wp_enqueue_scripts', 'bepduc_compare_assets');
+
+/** Only load advisor presentation on its dedicated page. */
+function bepduc_buying_advisor_assets(): void
+{
+    if (! is_page('tu-van-chon-bep')) {
+        return;
+    }
+    $relative = 'assets/css/buying-advisor.css';
+    $path = get_theme_file_path($relative);
+    wp_enqueue_style('bepduc-buying-advisor', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
+}
+add_action('wp_enqueue_scripts', 'bepduc_buying_advisor_assets');
