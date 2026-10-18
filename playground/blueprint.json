@@ -58,20 +58,8 @@
       }
     },
     {
-      "step": "wp-cli",
-      "command": "wp rewrite structure '/%postname%/'"
-    },
-    {
-      "step": "wp-cli",
-      "command": "wp bepduc catalog sync"
-    },
-    {
-      "step": "wp-cli",
-      "command": "wp bepduc seed products"
-    },
-    {
       "step": "runPHP",
-      "code": "<?php\nrequire '/wordpress/wp-load.php';\nforeach (['shop'=>'Shop','so-sanh'=>'So sánh','tu-van-chon-bep'=>'Tư vấn chọn bếp'] as $slug=>$title) {\n $page=get_page_by_path($slug);\n $id=$page ? $page->ID : wp_insert_post(['post_type'=>'page','post_status'=>'publish','post_title'=>$title,'post_name'=>$slug]);\n if ($slug==='shop') update_option('woocommerce_shop_page_id',$id);\n}\nupdate_option('woocommerce_currency','VND');\n"
+      "code": "<?php\nrequire_once '/wordpress/wp-load.php';\n// Keep Playground setup independent of WP-CLI's WebAssembly process.\nglobal $wp_rewrite;\n$wp_rewrite->set_permalink_structure('/%postname%/');\nflush_rewrite_rules(false);\nforeach (['shop'=>'Shop','so-sanh'=>'So sánh','tu-van-chon-bep'=>'Tư vấn chọn bếp'] as $slug=>$title) {\n  $page=get_page_by_path($slug, OBJECT, 'page');\n  $id=$page ? $page->ID : wp_insert_post(['post_type'=>'page','post_status'=>'publish','post_title'=>$title,'post_name'=>$slug],true);\n  if (is_wp_error($id)) throw new RuntimeException($id->get_error_message());\n  if ($slug==='shop') update_option('woocommerce_shop_page_id',$id);\n}\nupdate_option('woocommerce_currency','VND');\n// Lightweight synthetic preview: do not claim full WP-CLI manifest seed coverage.\nif (!class_exists('WC_Product_Simple')) throw new RuntimeException('WooCommerce not active.');\nif (!term_exists('bep-tu','product_cat')) wp_insert_term('Bếp từ DEMO','product_cat',['slug'=>'bep-tu']);\nif (!term_exists('may-hut-mui','product_cat')) wp_insert_term('Máy hút mùi DEMO','product_cat',['slug'=>'may-hut-mui']);\n$fixtures=[\n ['BD-PLAY-001','[DEMO] Bếp từ mẫu 60 cm','bep-tu','7990000'],\n ['BD-PLAY-002','[DEMO] Bếp từ mẫu 80 cm','bep-tu','12990000'],\n ['BD-PLAY-003','[DEMO] Máy hút mùi mẫu âm tủ','may-hut-mui','4990000'],\n ['BD-PLAY-004','[DEMO] Máy hút mùi mẫu kính cong','may-hut-mui','6990000'],\n];\nforeach($fixtures as [$sku,$name,$cat,$price]) {\n  if (wc_get_product_id_by_sku($sku)) continue;\n  $p=new WC_Product_Simple();\n  $p->set_sku($sku);\n  $p->set_name($name);\n  $p->set_status('publish');\n  $p->set_catalog_visibility('visible');\n  $p->set_regular_price($price);\n  $p->set_price($price);\n  $p->set_manage_stock(true);\n  $p->set_stock_quantity(10);\n  $p->set_description('SẢN PHẨM DEMO. Dữ liệu giả lập chỉ dùng để xem giao diện.');\n  $p->set_short_description('Hàng mẫu, không phải sản phẩm đang bán.');\n  $term=get_term_by('slug',$cat,'product_cat');\n  if($term) $p->set_category_ids([(int)$term->term_id]);\n  $p->save();\n}\n"
     }
   ]
 }
