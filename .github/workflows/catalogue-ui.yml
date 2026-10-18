@@ -67,6 +67,9 @@ jobs:
           wp bepduc seed products --path=/tmp/wordpress --allow-root
           wp post create --post_type=page --post_status=publish --post_title='So sánh' --post_name=so-sanh --path=/tmp/wordpress --allow-root
           wp post create --post_type=page --post_status=publish --post_title=Advisor --post_name=tu-van-chon-bep --path=/tmp/wordpress --allow-root
+          FRONT_ID="$(wp post create --post_type=page --post_status=publish --post_title=Home --post_name=trang-chu --porcelain --path=/tmp/wordpress --allow-root)"
+          wp option update show_on_front page --path=/tmp/wordpress --allow-root
+          wp option update page_on_front "$FRONT_ID" --path=/tmp/wordpress --allow-root
 
       - name: Verify registered blocks, patterns and theme templates
         run: |
@@ -245,6 +248,11 @@ jobs:
           curl -fsSG --data-urlencode 'bd_budget=1' http://127.0.0.1:8017/tu-van-chon-bep/ -o /tmp/advisor-budget.html
           grep -q 'Không tìm thấy sản phẩm' /tmp/advisor-budget.html
           ! grep -q 'bd-advisor__result' /tmp/advisor-budget.html
+          curl -fsS http://127.0.0.1:8017/ -o /tmp/home.html
+          for expected in 'bd-home__hero' 'bd-home__categories' 'bd-home__products' 'bd-home__guides' 'homepage.css'; do
+            grep -q "$expected" /tmp/home.html
+          done
+          grep -q 'BD-DEMO' /tmp/home.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
