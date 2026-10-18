@@ -79,10 +79,7 @@ jobs:
                 "woocommerce/product-price",
                 "woocommerce/product-stock-indicator",
                 "woocommerce/product-button",
-                "woocommerce/product-filters",
-                "woocommerce/product-filter-price",
-                "woocommerce/product-filter-status",
-                "woocommerce/product-filter-taxonomy",
+                "bepduc/catalogue-controls",
             ] as $name) {
                 if (!$registry->is_registered($name)) {
                     WP_CLI::error("Missing block: " . $name);
@@ -100,7 +97,7 @@ jobs:
                 }
             }
             $resultPattern = WP_Block_Patterns_Registry::get_instance()->get_registered("bepduc/catalogue-results");
-            if (strpos($resultPattern["content"], "product-filter-status") === false
+            if (strpos($resultPattern["content"], "bepduc/catalogue-controls") === false
                 || strpos($resultPattern["content"], "bd-product-card") === false) {
                 WP_CLI::error("Shared results pattern has missing native blocks");
             }
@@ -136,7 +133,7 @@ jobs:
           source = open('/tmp/shop.html', encoding='utf-8').read()
           for marker in ['bd-catalogue-page', 'bd-catalogue-layout', 'bd-catalogue-collection',
                          'wp-block-query', 'bd-product-card', 'bd-catalogue-toolbar',
-                         'Lọc sản phẩm', '[DEMO]', 'Không tìm thấy sản phẩm']:
+                         'bd-catalogue-form', '[DEMO]', 'Không tìm thấy sản phẩm']:
               index = source.find(marker)
               print(f"{marker}: count={source.count(marker)} first={index}")
               if index >= 0:
@@ -153,6 +150,18 @@ jobs:
               exit 1
             fi
           done
+          curl -fsSG --data-urlencode 'bd_brand=demo-atelier' http://127.0.0.1:8017/shop/ -o /tmp/brand.html
+          curl -fsSG --data-urlencode 'bd_stock=outofstock' http://127.0.0.1:8017/shop/ -o /tmp/stock.html
+          curl -fsSG --data-urlencode 'bd_min=100000000' http://127.0.0.1:8017/shop/ -o /tmp/min-price.html
+          curl -fsSG --data-urlencode 'bd_sort=price-desc' http://127.0.0.1:8017/shop/ -o /tmp/sort.html
+          for file in /tmp/brand.html /tmp/stock.html /tmp/min-price.html /tmp/sort.html; do
+            echo "$file: cards=$(grep -o 'bd-product-card' "$file" | wc -l) atelier=$(grep -o 'product_brand-demo-atelier' "$file" | wc -l) studio=$(grep -o 'product_brand-demo-studio' "$file" | wc -l)"
+          done
+          grep -q 'product_brand-demo-atelier' /tmp/brand.html
+          if grep -q 'product_brand-demo-studio' /tmp/brand.html; then exit 1; fi
+          grep -q 'outofstock' /tmp/stock.html
+          if grep -q 'bd-product-card' /tmp/min-price.html; then exit 1; fi
+          grep -q 'bd-product-card' /tmp/sort.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1

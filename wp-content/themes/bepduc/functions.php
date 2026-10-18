@@ -28,6 +28,7 @@ add_action('after_setup_theme', 'bepduc_setup');
 // A presentation-only block that reads WooCommerce native brand terms.
 require_once get_theme_file_path('inc/product-brand.php');
 require_once get_theme_file_path('inc/catalogue-query.php');
+require_once get_theme_file_path('inc/catalogue-filters.php');
 
 /**
  * Enqueue light catalogue styling only on WooCommerce product archives.
