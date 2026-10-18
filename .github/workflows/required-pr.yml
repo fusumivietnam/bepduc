@@ -70,6 +70,8 @@ jobs:
           for key, value in options.items():
               assert isinstance(value, str), f"siteOptions.{key} must be a string"
           assert options.get("blog_public") == "0", "Demo must request search engine exclusion"
+          assert all(step.get("step") != "wp-cli" for step in blueprint.get("steps", [])), "Playground preview must not execute WP-CLI in browser WASM"
+          assert any(step.get("step") == "runPHP" for step in blueprint.get("steps", [])), "Expected runPHP setup step"
           print("Playground siteOptions contract verified")
           PY
 
