@@ -15,8 +15,8 @@ if (! defined('ABSPATH')) {
  */
 function bepduc_catalogue_filter_values(): array
 {
-    $allowed_sorts = ['recent', 'title', 'price-asc', 'price-desc'];
-    $sort = isset($_GET['bd_sort']) && is_string($_GET['bd_sort']) ? sanitize_key(wp_unslash($_GET['bd_sort'])) : 'recent';
+    $allowed_sorts = ['title', 'recent', 'price-asc', 'price-desc'];
+    $sort = isset($_GET['bd_sort']) && is_string($_GET['bd_sort']) ? sanitize_key(wp_unslash($_GET['bd_sort'])) : 'title';
     if (! in_array($sort, $allowed_sorts, true)) {
         $sort = 'recent';
     }
@@ -56,13 +56,18 @@ function bepduc_catalogue_filter_values(): array
  */
 function bepduc_catalogue_apply_filters(array $query, WP_Block $block): array
 {
-    // Limit the behavior to product loops on real WooCommerce catalogue pages.
-    $shop_id = function_exists('wc_get_page_id') ? wc_get_page_id('shop') : -1;
-    $catalogue_request = ($shop_id > 0 && (is_page($shop_id) || get_queried_object_id() === $shop_id))
-        || (function_exists('is_shop') && is_shop())
-        || is_post_type_archive('product')
-        || is_tax(['product_cat', 'product_brand']);
-    if (! $catalogue_request || ($query['post_type'] ?? '') !== 'product') {
+    // Never touch the main query, unrelated post types or unfiltered product loops.
+    if (($query['post_type'] ?? '') !== 'product') {
+        return $query;
+    }
+    $has_filters = false;
+    foreach (['bd_brand', 'bd_stock', 'bd_min', 'bd_max', 'bd_sort'] as $key) {
+        if (isset($_GET[$key]) && is_string($_GET[$key])) {
+            $has_filters = true;
+            break;
+        }
+    }
+    if (! $has_filters) {
         return $query;
     }
 
@@ -169,7 +174,7 @@ function bepduc_render_catalogue_controls(): string
         $html .= '<input id="' . esc_attr($field) . '" type="number" min="0" step="1" inputmode="numeric" name="' . esc_attr($field) . '" value="' . esc_attr($values[$field]) . '">';
     }
     $html .= '<label for="bd-sort">Sắp xếp</label><select id="bd-sort" name="bd_sort">';
-    foreach (['recent' => 'Mới nhất', 'title' => 'Tên A–Z', 'price-asc' => 'Giá tăng dần', 'price-desc' => 'Giá giảm dần'] as $slug => $label) {
+    foreach (['title' => 'Tên A–Z', 'recent' => 'Mới nhất', 'price-asc' => 'Giá tăng dần', 'price-desc' => 'Giá giảm dần'] as $slug => $label) {
         $html .= '<option value="' . esc_attr($slug) . '"' . selected($values['bd_sort'], $slug, false) . '>' . esc_html($label) . '</option>';
     }
     $html .= '</select></div>';
