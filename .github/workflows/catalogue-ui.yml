@@ -88,17 +88,21 @@ jobs:
                     WP_CLI::error("Missing block: " . $name);
                 }
             }
-            if (!WP_Block_Patterns_Registry::get_instance()->is_registered("bepduc/product-card")) {
-                WP_CLI::error("Missing reusable product card pattern");
+            foreach (["bepduc/product-card", "bepduc/catalogue-results"] as $pattern) {
+                if (!WP_Block_Patterns_Registry::get_instance()->is_registered($pattern)) {
+                    WP_CLI::error("Missing reusable theme pattern " . $pattern);
+                }
             }
-            foreach (["archive-product", "taxonomy-product_cat", "taxonomy-product_brand"] as $slug) {
+            foreach (["archive-product", "page-shop", "taxonomy-product_cat", "taxonomy-product_brand"] as $slug) {
                 $template = get_block_template("bepduc//" . $slug, "wp_template");
-                if (!$template || strpos($template->content, "bepduc/product-card") === false) {
+                if (!$template || strpos($template->content, "bepduc/catalogue-results") === false) {
                     WP_CLI::error("Missing catalogue template or card pattern: " . $slug);
                 }
-                if (strpos($template->content, "product-filter-status") === false) {
-                    WP_CLI::error("Missing native stock filter: " . $slug);
-                }
+            }
+            $resultPattern = WP_Block_Patterns_Registry::get_instance()->get_registered("bepduc/catalogue-results");
+            if (strpos($resultPattern["content"], "product-filter-status") === false
+                || strpos($resultPattern["content"], "bepduc/product-card") === false) {
+                WP_CLI::error("Shared results pattern has missing native blocks");
             }
             $id = wc_get_product_id_by_sku("BD-DEMO-002");
             $parsed = parse_blocks("<!-- wp:bepduc/product-brand /-->");
