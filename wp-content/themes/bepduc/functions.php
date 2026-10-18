@@ -38,8 +38,10 @@ function bepduc_catalogue_assets(): void
         return;
     }
 
+    $shop_page_id = function_exists('wc_get_page_id') ? wc_get_page_id('shop') : -1;
     if (! is_shop() && ! is_product_category() && ! is_product_tag()
-        && ! is_tax('product_brand') && ! is_post_type_archive('product')) {
+        && ! is_tax('product_brand') && ! is_post_type_archive('product')
+        && ! ($shop_page_id > 0 && is_page($shop_page_id))) {
         return;
     }
 
