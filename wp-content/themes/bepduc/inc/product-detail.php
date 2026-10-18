@@ -89,11 +89,34 @@ function bepduc_render_installation_guidance(): string
         . '</aside>';
 }
 
+/**
+ * Publish checked buying and installation notes only if a source is recorded.
+ */
+function bepduc_render_product_advice(): string
+{
+    $product = bepduc_detail_product();
+    if (! $product || ! class_exists('Bepduc\\Core\\Advisor\\ProductFields')) {
+        return '';
+    }
+    $items = \Bepduc\Core\Advisor\ProductFields::published($product);
+    if (! $items) {
+        return '';
+    }
+
+    $html = '<section class="bd-product-advice" aria-label="' . esc_attr__('Tư vấn lựa chọn và lắp đặt', 'bepduc') . '">';
+    $html .= '<h2>' . esc_html__('Tư vấn sản phẩm', 'bepduc') . '</h2><dl>';
+    foreach ($items as $label => $value) {
+        $html .= '<div><dt>' . esc_html($label) . '</dt><dd>' . nl2br(esc_html($value)) . '</dd></div>';
+    }
+    return $html . '</dl></section>';
+}
+
 function bepduc_register_detail_blocks(): void
 {
     foreach ([
         'bepduc/product-specifications' => ['Thông số kỹ thuật', 'bepduc_render_product_specifications'],
         'bepduc/installation-guidance' => ['Lưu ý lắp đặt', 'bepduc_render_installation_guidance'],
+        'bepduc/product-advice' => ['Tư vấn sản phẩm', 'bepduc_render_product_advice'],
     ] as $name => [$title, $callback]) {
         register_block_type($name, [
             'api_version' => 3,
