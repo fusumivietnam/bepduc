@@ -5,7 +5,9 @@
 Open [WordPress Playground](https://playground.wordpress.net/) and load the Blueprint at:
 `https://raw.githubusercontent.com/fusumivietnam/bepduc/main/playground/blueprint.json`
 
-Or construct a direct URL using the Playground `blueprint-url` parameter and the raw JSON URL (URL-encode the parameter). The Blueprint installs WooCommerce 11.2.1 from WordPress.org and the project-owned theme/core using `git:directory`, then executes the additive catalogue sync and synthetic demo seed commands. It creates `shop`, `so-sanh`, and `tu-van-chon-bep` Pages and navigates to `/shop/`.
+Or construct a direct URL using the Playground `blueprint-url` parameter and the raw JSON URL (URL-encode the parameter). The Blueprint installs WooCommerce 11.2.1 from WordPress.org and the project-owned theme/core using `git:directory`, then uses a single `runPHP` step (no WP-CLI, avoiding a known browser-WebAssembly crash) to add four small synthetic WooCommerce products. It creates `shop`, `so-sanh`, and `tu-van-chon-bep` Pages and navigates to `/shop/`.
+
+This **lightweight preview has four products**, not the full 24-product/variation fixture set used by GitHub CI. Browser Playground initialization is not covered by the MySQL-based GitHub Actions tests and still needs a manual launch check.
 
 The demo is **ephemeral browser storage**, not a persistent staging server. The Git resources refer to main; restart the Playground for fresh code. Do not enter customer data, credentials, licenses or real payments. Plugin downloads require browser network access and may take time. Playground is SQLite-based, so it is not a substitute for production MySQL behavior.
 
