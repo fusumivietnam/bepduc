@@ -1,8 +1,6 @@
 <?php
 /**
- * WooCommerce shop pages can be routed as a normal WordPress Page.
- * In that case, Product Collection must not inherit the page query.
- * Taxonomy/product archives still inherit their normal WC query context.
+ * Use the WordPress native query for products with taxonomy-safe inheritance.
  *
  * @package Bepduc
  */
@@ -13,27 +11,26 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * @param array<string, mixed> $parsed_block Parsed block data.
+ * Product shop may resolve as a WordPress Page; taxonomy archives must
+ * preserve their main query context for correct term filtering.
+ *
+ * @param array<string, mixed> $parsed_block Parsed block.
  * @return array<string, mixed>
  */
-function bepduc_shop_collection_query(array $parsed_block): array
+function bepduc_catalogue_query_context(array $parsed_block): array
 {
-    if (($parsed_block['blockName'] ?? '') !== 'woocommerce/product-collection'
-        || ! function_exists('wc_get_page_id')) {
+    if (($parsed_block['blockName'] ?? '') !== 'core/query'
+        || ! in_array('bd-catalogue-collection', explode(' ', (string) ($parsed_block['attrs']['className'] ?? '')), true)) {
         return $parsed_block;
     }
 
-    $shop_page_id = wc_get_page_id('shop');
-    if ($shop_page_id < 1 || ! is_page($shop_page_id)
-        || is_post_type_archive('product')) {
-        return $parsed_block;
+    if (is_tax(['product_cat', 'product_brand', 'product_tag']) || is_post_type_archive('product')) {
+        $parsed_block['attrs']['query']['inherit'] = true;
+    } else {
+        $parsed_block['attrs']['query']['inherit'] = false;
+        $parsed_block['attrs']['query']['postType'] = 'product';
     }
-
-    // Only the Page-routed shop needs an independent Woo Product Collection.
-    $parsed_block['attrs']['query']['inherit'] = false;
-    $parsed_block['attrs']['query']['postType'] = 'product';
-    $parsed_block['attrs']['query']['filterable'] = true;
 
     return $parsed_block;
 }
-add_filter('render_block_data', 'bepduc_shop_collection_query');
+add_filter('render_block_data', 'bepduc_catalogue_query_context');
