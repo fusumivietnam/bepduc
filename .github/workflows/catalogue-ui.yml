@@ -125,11 +125,16 @@ jobs:
             cat /tmp/wp-serve.log
             exit 1
           fi
-          grep -q 'bd-catalogue-page' /tmp/shop.html
-          grep -q 'bd-product-card' /tmp/shop.html
-          grep -q 'woocommerce-product-collection' /tmp/shop.html
-          grep -q 'catalogue.css' /tmp/shop.html
-          grep -q 'Demo' /tmp/shop.html
+          echo "Shop HTTP response length: $(wc -c < /tmp/shop.html)"
+          echo 'Shop diagnostics:'
+          grep -Eo '<title[^>]*>[^<]+|<main[^>]*>|<h1[^>]*>[^<]+|bd-product-card|bd-catalogue-page|woocommerce-product-collection|catalogue.css' /tmp/shop.html | head -n 35 || true
+          for expected in 'bd-catalogue-page' 'bd-product-card' 'woocommerce-product-collection' 'catalogue.css' 'Demo'; do
+            if ! grep -q "$expected" /tmp/shop.html; then
+              echo "Missing frontend marker: $expected"
+              head -c 3200 /tmp/shop.html
+              exit 1
+            fi
+          done
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
