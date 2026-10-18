@@ -154,6 +154,9 @@ jobs:
           curl -fsSG --data-urlencode 'bd_stock=outofstock' http://127.0.0.1:8017/shop/ -o /tmp/stock.html
           curl -fsSG --data-urlencode 'bd_min=100000000' http://127.0.0.1:8017/shop/ -o /tmp/min-price.html
           curl -fsSG --data-urlencode 'bd_sort=price-desc' http://127.0.0.1:8017/shop/ -o /tmp/sort.html
+          for file in /tmp/brand.html /tmp/stock.html /tmp/min-price.html /tmp/sort.html; do
+            echo "$file: cards=$(grep -o 'bd-product-card' "$file" | wc -l) atelier=$(grep -o 'product_brand-demo-atelier' "$file" | wc -l) studio=$(grep -o 'product_brand-demo-studio' "$file" | wc -l)"
+          done
           grep -q 'product_brand-demo-atelier' /tmp/brand.html
           if grep -q 'product_brand-demo-studio' /tmp/brand.html; then exit 1; fi
           grep -q 'outofstock' /tmp/stock.html
