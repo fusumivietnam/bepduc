@@ -51,24 +51,23 @@ function bepduc_catalogue_filter_values(): array
  * Only modify Bepduc's native query loop when it targets the Woo product type
  * on a shop or Woo taxonomy archive. Never alter a global product query.
  *
- * @param array<string, mixed> $query WP_Query arguments.
- * @param WP_Block $block Post template context.
- * @return array<string, mixed>
+ * @param WP_Query $wp_query Target product query.
  */
-function bepduc_catalogue_apply_filters(array $query, WP_Block $block): array
+function bepduc_catalogue_apply_filters(WP_Query $wp_query): void
 {
-    if (! function_exists('wc_get_page_id')) {
-        return $query;
+    if (is_admin() || $wp_query->is_main_query() || ! function_exists('wc_get_page_id')) {
+        return;
     }
 
     $shop_id = wc_get_page_id('shop');
     $on_catalogue = ($shop_id > 0 && is_page($shop_id))
         || is_post_type_archive('product')
         || is_tax(['product_cat', 'product_brand']);
-    if (! $on_catalogue || ($query['post_type'] ?? '') !== 'product') {
-        return $query;
+    if (! $on_catalogue || $wp_query->get('post_type') !== 'product') {
+        return;
     }
 
+    $query = $wp_query->query_vars;
     $values = bepduc_catalogue_filter_values();
     $query['post_type'] = 'product';
     $query['post_status'] = 'publish';
@@ -133,9 +132,11 @@ function bepduc_catalogue_apply_filters(array $query, WP_Block $block): array
             $query['order'] = 'DESC';
     }
 
-    return $query;
+    foreach ($query as $key => $value) {
+        $wp_query->set($key, $value);
+    }
 }
-add_filter('query_loop_block_query_vars', 'bepduc_catalogue_apply_filters', 10, 2);
+add_action('pre_get_posts', 'bepduc_catalogue_apply_filters');
 
 /**
  * Render a keyboard-friendly GET form. All values are encoded and escaped.
