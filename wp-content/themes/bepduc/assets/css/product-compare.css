@@ -1,0 +1,16 @@
+/* Side-by-side product comparison, accessible without client-side JS. */
+.bd-compare-page {padding-block:clamp(2rem,5vw,4rem)}
+.bd-compare h1 {font-size:clamp(1.7rem,3vw,2.8rem);line-height:1.2}
+.bd-compare__form {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem 1.15rem;align-items:end;margin-block:1.5rem 2.5rem}
+.bd-compare__form label {font-weight:600;font-size:.88rem}
+.bd-compare__form select {width:100%;min-height:2.8rem;padding:.5rem;border:1px solid var(--wp--preset--color--border);background:var(--wp--preset--color--surface);color:var(--wp--preset--color--ink);border-radius:4px}
+.bd-compare__form button {grid-column:1/-1;justify-self:start;min-height:2.8rem;padding:.6rem 1.75rem;border:0;border-radius:4px;background:var(--wp--preset--color--accent);color:#fff;cursor:pointer}
+.bd-compare__scroll {overflow-x:auto;border:1px solid var(--wp--preset--color--border);background:var(--wp--preset--color--surface)}
+.bd-compare table {width:100%;min-width:660px;border-collapse:collapse}
+.bd-compare :is(th,td) {padding:1rem;border-bottom:1px solid var(--wp--preset--color--border);text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.bd-compare th {font-weight:600}.bd-compare thead th {background:var(--wp--preset--color--canvas)}
+.bd-compare tbody th {width:22%;color:var(--wp--preset--color--muted)}
+.bd-compare__note {color:var(--wp--preset--color--muted);font-size:.875rem}
+.bd-compare :is(select,button,a,[tabindex]):focus-visible {outline:3px solid var(--wp--preset--color--accent);outline-offset:3px}
+.bd-compare-action a {display:inline-block;padding:.7rem 1rem;border:1px solid var(--wp--preset--color--border);border-radius:4px;text-decoration:none}
+@media(max-width:780px){.bd-compare__form {grid-template-columns:1fr}.bd-compare__form button {grid-column:auto;width:100%}}

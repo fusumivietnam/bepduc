@@ -65,6 +65,7 @@ jobs:
           wp option update woocommerce_currency VND --path=/tmp/wordpress --allow-root
           wp bepduc catalog sync --path=/tmp/wordpress --allow-root
           wp bepduc seed products --path=/tmp/wordpress --allow-root
+          wp post create --post_type=page --post_status=publish --post_title='So sánh' --post_name=so-sanh --path=/tmp/wordpress --allow-root
 
       - name: Verify registered blocks, patterns and theme templates
         run: |
@@ -216,6 +217,26 @@ jobs:
           grep -q 'Studio' /tmp/product-simple.html
           grep -q 'Đã kiểm chứng trên tài liệu' /tmp/product-simple.html
           if grep -q 'Tài liệu mẫu CI-01' /tmp/product-simple.html; then echo 'Source reference leaked into public content'; exit 1; fi
+          # Product comparison uses only public product IDs and an anonymous GET URL.
+          ID1="$(wp eval 'echo wc_get_product_id_by_sku("BD-DEMO-002");' --path=/tmp/wordpress --allow-root)"
+          ID2="$(wp eval 'echo wc_get_product_id_by_sku("BD-DEMO-006");' --path=/tmp/wordpress --allow-root)"
+          IDVAR="$(wp eval 'echo wc_get_product_id_by_sku("BD-DEMO-024");' --path=/tmp/wordpress --allow-root)"
+          curl -fsS http://127.0.0.1:8017/so-sanh/ -o /tmp/compare-empty.html
+          grep -q 'Chọn ít nhất hai sản phẩm' /tmp/compare-empty.html
+          curl -fsSG --data-urlencode "bd_compare=$ID1,$ID2" http://127.0.0.1:8017/so-sanh/ -o /tmp/compare-two.html
+          grep -q 'bd-compare__scroll' /tmp/compare-two.html
+          grep -q 'Tình trạng' /tmp/compare-two.html
+          grep -q 'Thông số' /tmp/compare-two.html || grep -q 'Dòng sản phẩm' /tmp/compare-two.html
+          curl -fsSG --data-urlencode "bd_compare=$ID1,$IDVAR" http://127.0.0.1:8017/so-sanh/ -o /tmp/compare-variable.html
+          grep -q 'bd-compare__scroll' /tmp/compare-variable.html
+          curl -fsSG --data-urlencode "bd_compare=1,999999999" http://127.0.0.1:8017/so-sanh/ -o /tmp/compare-invalid.html
+          if grep -q 'bd-compare__scroll' /tmp/compare-invalid.html; then echo 'Invalid IDs included'; exit 1; fi
+          curl -fsSG --data-urlencode "bd_compare=$ID1" http://127.0.0.1:8017/so-sanh/ -o /tmp/compare-one.html
+          if grep -q 'bd-compare__scroll' /tmp/compare-one.html; then echo 'Single product unexpectedly compared'; exit 1; fi
+          curl -fsS -D /tmp/compare-headers -o /dev/null -G --data-urlencode "bd_product[]=$ID1" --data-urlencode "bd_product[]=$ID2" http://127.0.0.1:8017/so-sanh/
+          grep -q '303 See Other' /tmp/compare-headers
+          grep -q 'So sánh sản phẩm này' /tmp/product-simple.html
+          grep -q 'product-compare.css' /tmp/compare-two.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
