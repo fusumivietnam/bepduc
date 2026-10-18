@@ -1,0 +1,136 @@
+name: Catalogue UI integration
+
+on:
+  pull_request:
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - '.github/workflows/catalogue-ui.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - '.github/workflows/catalogue-ui.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare PHP + locked dependencies
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install public WooCommerce package and WP-CLI
+        run: |
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
+          curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /tmp/wp-cli.phar
+          chmod +x /tmp/wp-cli.phar
+          sudo mv /tmp/wp-cli.phar /usr/local/bin/wp
+
+      - name: Install WP + activate Bepduc theme and Woo
+        run: |
+          wp core download --path=/tmp/wordpress --allow-root
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306 --skip-check --allow-root
+          wp config set WP_ENVIRONMENT_TYPE local --type=constant --path=/tmp/wordpress --allow-root
+          wp core install --path=/tmp/wordpress --url=http://localhost:8017 --title='Catalogue UI test' --admin_user=admin --admin_password='ci-test-only' --admin_email=devnull@example.com --skip-email --allow-root
+          cp -R wp-content/plugins/bepduc-core /tmp/wordpress/wp-content/plugins/bepduc-core
+          cp -R wp-content/plugins/woocommerce /tmp/wordpress/wp-content/plugins/woocommerce
+          cp -R wp-content/themes/bepduc /tmp/wordpress/wp-content/themes/bepduc
+          wp plugin activate woocommerce bepduc-core --path=/tmp/wordpress --allow-root
+          wp theme activate bepduc --path=/tmp/wordpress --allow-root
+          wp rewrite structure '/%postname%/' --path=/tmp/wordpress --allow-root
+          SHOP_ID="$(wp post create --post_type=page --post_status=publish --post_title=Shop --porcelain --path=/tmp/wordpress --allow-root)"
+          wp option update woocommerce_shop_page_id "$SHOP_ID" --path=/tmp/wordpress --allow-root
+          wp option update woocommerce_currency VND --path=/tmp/wordpress --allow-root
+          wp bepduc catalog sync --path=/tmp/wordpress --allow-root
+          wp bepduc seed products --path=/tmp/wordpress --allow-root
+
+      - name: Verify registered blocks, patterns and theme templates
+        run: |
+          wp eval '
+            $registry = WP_Block_Type_Registry::get_instance();
+            foreach ([
+                "bepduc/product-brand",
+                "woocommerce/product-collection",
+                "woocommerce/product-template",
+                "woocommerce/product-image",
+                "woocommerce/product-sale-badge",
+                "woocommerce/product-price",
+                "woocommerce/product-stock-indicator",
+                "woocommerce/product-button",
+                "woocommerce/product-filters",
+                "woocommerce/product-filter-price",
+                "woocommerce/product-filter-status",
+                "woocommerce/product-filter-taxonomy",
+            ] as $name) {
+                if (!$registry->is_registered($name)) {
+                    WP_CLI::error("Missing block: " . $name);
+                }
+            }
+            if (!WP_Block_Patterns_Registry::get_instance()->is_registered("bepduc/product-card")) {
+                WP_CLI::error("Missing reusable product card pattern");
+            }
+            foreach (["archive-product", "taxonomy-product_cat", "taxonomy-product_brand"] as $slug) {
+                $template = get_block_template("bepduc//" . $slug, "wp_template");
+                if (!$template || strpos($template->content, "bepduc/product-card") === false) {
+                    WP_CLI::error("Missing catalogue template or card pattern: " . $slug);
+                }
+                if (strpos($template->content, "product-filter-status") === false) {
+                    WP_CLI::error("Missing native stock filter: " . $slug);
+                }
+            }
+            $id = wc_get_product_id_by_sku("BD-DEMO-002");
+            $parsed = parse_blocks("<!-- wp:bepduc/product-brand /-->");
+            $brand = new WP_Block($parsed[0], ["postId" => $id, "postType" => "product"]);
+            $html = $brand->render();
+            if (strpos($html, "Demo Studio") === false || strpos($html, "rel=\"tag\"") === false) {
+                WP_CLI::error("Native product brand is not rendering with correct post context");
+            }
+            WP_CLI::success("All Woo blocks/templates and brand context are registered.");
+          ' --path=/tmp/wordpress --allow-root
+
+      - name: Serve shop archive and check actual frontend rendering
+        run: |
+          set -euo pipefail
+          wp server --host=127.0.0.1 --port=8017 --path=/tmp/wordpress --allow-root > /tmp/wp-serve.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 15); do
+            if curl -fsS http://127.0.0.1:8017/shop/ -o /tmp/shop.html; then
+              break
+            fi
+            sleep 1
+          done
+          if [[ ! -s /tmp/shop.html ]]; then
+            cat /tmp/wp-serve.log
+            exit 1
+          fi
+          grep -q 'bd-catalogue-page' /tmp/shop.html
+          grep -q 'bd-product-card' /tmp/shop.html
+          grep -q 'woocommerce-product-collection' /tmp/shop.html
+          grep -q 'catalogue.css' /tmp/shop.html
+          grep -q 'Demo' /tmp/shop.html
+          if grep -q 'Fatal error' /tmp/shop.html; then
+            echo 'Fatal PHP error on shop page'
+            exit 1
+          fi
