@@ -66,6 +66,7 @@ jobs:
           wp bepduc catalog sync --path=/tmp/wordpress --allow-root
           wp bepduc seed products --path=/tmp/wordpress --allow-root
           wp post create --post_type=page --post_status=publish --post_title='So sánh' --post_name=so-sanh --path=/tmp/wordpress --allow-root
+          wp post create --post_type=page --post_status=publish --post_title=Advisor --post_name=tu-van-chon-bep --path=/tmp/wordpress --allow-root
 
       - name: Verify registered blocks, patterns and theme templates
         run: |
