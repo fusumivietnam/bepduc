@@ -111,6 +111,23 @@ jobs:
             WP_CLI::success("All Woo blocks/templates and brand context are registered.");
           ' --path=/tmp/wordpress --allow-root
 
+      - name: Verify product detail blocks and template
+        run: |
+          wp eval '
+            foreach (["woocommerce/product-image-gallery", "woocommerce/add-to-cart-form", "woocommerce/product-details", "bepduc/product-specifications", "bepduc/installation-guidance"] as $name) {
+              if (!WP_Block_Type_Registry::get_instance()->is_registered($name)) { WP_CLI::error("Missing product block: " . $name); }
+            }
+            $template = get_block_template("bepduc//single-product", "wp_template");
+            if (!$template || strpos($template->content, "woocommerce/add-to-cart-form") === false) {
+              WP_CLI::error("Single product template missing");
+            }
+            foreach (["BD-DEMO-002", "BD-DEMO-024"] as $sku) {
+              $id = wc_get_product_id_by_sku($sku);
+              $product = wc_get_product($id);
+              if (!$product) { WP_CLI::error("Missing product " . $sku); }
+            }
+          ' --path=/tmp/wordpress --allow-root
+
       - name: Serve shop archive and check actual frontend rendering
         run: |
           set -euo pipefail
@@ -162,6 +179,20 @@ jobs:
           grep -q 'outofstock' /tmp/stock.html
           if grep -q 'bd-product-card' /tmp/min-price.html; then exit 1; fi
           grep -q 'bd-product-card' /tmp/sort.html
+          SIMPLE_SLUG="$(wp post get "$(wp eval 'echo wc_get_product_id_by_sku("BD-DEMO-002");' --path=/tmp/wordpress --allow-root)" --field=post_name --path=/tmp/wordpress --allow-root)"
+          VARIABLE_SLUG="$(wp post get "$(wp eval 'echo wc_get_product_id_by_sku("BD-DEMO-024");' --path=/tmp/wordpress --allow-root)" --field=post_name --path=/tmp/wordpress --allow-root)"
+          curl -fsS "http://127.0.0.1:8017/product/$SIMPLE_SLUG/" -o /tmp/product-simple.html
+          curl -fsS "http://127.0.0.1:8017/product/$VARIABLE_SLUG/" -o /tmp/product-variable.html
+          for file in /tmp/product-simple.html /tmp/product-variable.html; do
+            grep -q 'bd-product-detail' "$file"
+            grep -q 'bd-product-specifications' "$file"
+            grep -q 'bd-product-installation' "$file"
+            grep -q 'product-detail.css' "$file"
+            grep -q 'add-to-cart' "$file"
+            if grep -q 'Fatal error' "$file"; then exit 1; fi
+          done
+          grep -q 'variation' /tmp/product-variable.html
+          grep -q 'Studio' /tmp/product-simple.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
