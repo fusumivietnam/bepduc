@@ -128,6 +128,27 @@ jobs:
             }
           ' --path=/tmp/wordpress --allow-root
 
+      - name: Verify editorial advice metadata lifecycle
+        run: |
+          wp eval '
+            $fields = \Bepduc\Core\Advisor\ProductFields::FIELDS;
+            foreach (array_keys($fields) as $key) {
+              if (!registered_meta_key_exists("post", "_".$key, "product")) { WP_CLI::error("Unregistered advisor meta: " . $key); }
+            }
+            $product = wc_get_product(wc_get_product_id_by_sku("BD-DEMO-002"));
+            $product->update_meta_data("_bd_buying_advice", "Đã kiểm chứng trên tài liệu");
+            $product->save();
+            if (\Bepduc\Core\Advisor\ProductFields::published($product) !== []) {
+              WP_CLI::error("Unsourced advice is visible");
+            }
+            $product->update_meta_data("_bd_source_reference", "Tài liệu mẫu CI-01");
+            $product->save();
+            $output = \Bepduc\Core\Advisor\ProductFields::published($product);
+            if (count($output) !== 1 || reset($output) !== "Đã kiểm chứng trên tài liệu") {
+              WP_CLI::error("Verified editorial advice not available");
+            }
+          ' --path=/tmp/wordpress --allow-root
+
       - name: Serve shop archive and check actual frontend rendering
         run: |
           set -euo pipefail
@@ -193,6 +214,8 @@ jobs:
           done
           grep -q 'variation' /tmp/product-variable.html
           grep -q 'Studio' /tmp/product-simple.html
+          grep -q 'Đã kiểm chứng trên tài liệu' /tmp/product-simple.html
+          if grep -q 'Tài liệu mẫu CI-01' /tmp/product-simple.html; then echo 'Source reference leaked into public content'; exit 1; fi
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1

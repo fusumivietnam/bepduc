@@ -18,6 +18,8 @@ final class Plugin
     {
         add_filter('acf/settings/save_json', [self::class, 'acfSaveJsonPath']);
         add_filter('acf/settings/load_json', [self::class, 'acfLoadJsonPaths']);
+        require_once BEPDUC_CORE_DIR . 'src/Advisor/ProductFields.php';
+        \Bepduc\Core\Advisor\ProductFields::boot();
 
         // Catalogue setup is explicit: no database changes on activation/page views.
         if (defined('WP_CLI') && WP_CLI) {

@@ -23,3 +23,11 @@
 @media (max-width: 781px) { .bd-product-detail__hero { gap: 1.5rem; } .bd-product-detail__specifications th { width: 44%; } }
 @media (max-width: 480px) { .bd-product-specifications th,.bd-product-specifications td { padding: .75rem .5rem; font-size: .85rem; } }
 @media (prefers-reduced-motion: reduce) { .bd-product-detail * { scroll-behavior: auto !important; } }
+
+.bd-product-advice { margin-block: var(--wp--preset--spacing--8); padding: var(--wp--preset--spacing--6); border: 1px solid var(--wp--preset--color--border); background: var(--wp--preset--color--surface); }
+.bd-product-advice h2 { margin-top: 0; }
+.bd-product-advice dl { margin: 0; }
+.bd-product-advice dl > div { display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); gap: 1rem; padding: .85rem 0; border-bottom: 1px solid var(--wp--preset--color--border); }
+.bd-product-advice dt { font-weight: 600; }
+.bd-product-advice dd { margin: 0; overflow-wrap: anywhere; }
+@media(max-width: 600px) { .bd-product-advice { padding: 1rem; } .bd-product-advice dl > div { grid-template-columns: 1fr; gap: .25rem; } }
