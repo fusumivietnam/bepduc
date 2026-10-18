@@ -101,7 +101,7 @@ jobs:
             }
             $resultPattern = WP_Block_Patterns_Registry::get_instance()->get_registered("bepduc/catalogue-results");
             if (strpos($resultPattern["content"], "product-filter-status") === false
-                || strpos($resultPattern["content"], "bepduc/product-card") === false) {
+                || strpos($resultPattern["content"], "bd-product-card") === false) {
                 WP_CLI::error("Shared results pattern has missing native blocks");
             }
             $id = wc_get_product_id_by_sku("BD-DEMO-002");
