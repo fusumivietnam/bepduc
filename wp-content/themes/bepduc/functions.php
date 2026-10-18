@@ -62,3 +62,15 @@ function bepduc_product_detail_assets(): void
     wp_enqueue_style('bepduc-product-detail', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
 }
 add_action('wp_enqueue_scripts', 'bepduc_product_detail_assets');
+
+/** Load comparison styling only on comparison page and product pages with compare CTA. */
+function bepduc_compare_assets(): void
+{
+    if (! is_page('so-sanh') && ! is_singular('product')) {
+        return;
+    }
+    $relative = 'assets/css/product-compare.css';
+    $path = get_theme_file_path($relative);
+    wp_enqueue_style('bepduc-product-compare', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
+}
+add_action('wp_enqueue_scripts', 'bepduc_compare_assets');
