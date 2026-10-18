@@ -72,8 +72,8 @@ jobs:
             $registry = WP_Block_Type_Registry::get_instance();
             foreach ([
                 "bepduc/product-brand",
-                "woocommerce/product-collection",
-                "woocommerce/product-template",
+                "core/query",
+                "core/post-template",
                 "woocommerce/product-image",
                 "woocommerce/product-sale-badge",
                 "woocommerce/product-price",
@@ -135,7 +135,7 @@ jobs:
           python3 - <<'PY'
           source = open('/tmp/shop.html', encoding='utf-8').read()
           for marker in ['bd-catalogue-page', 'bd-catalogue-layout', 'bd-catalogue-collection',
-                         'woocommerce-product-collection', 'bd-product-card', 'bd-catalogue-toolbar',
+                         'wp-block-query', 'bd-product-card', 'bd-catalogue-toolbar',
                          'Lọc sản phẩm', '[DEMO]', 'Không tìm thấy sản phẩm']:
               index = source.find(marker)
               print(f"{marker}: count={source.count(marker)} first={index}")
