@@ -33,6 +33,7 @@ require_once get_theme_file_path('inc/catalogue-filters.php');
 require_once get_theme_file_path('inc/product-detail.php');
 require_once get_theme_file_path('inc/product-compare.php');
 require_once get_theme_file_path('inc/buying-advisor.php');
+require_once get_theme_file_path('inc/homepage.php');
 
 /**
  * Enqueue light catalogue styling only on WooCommerce product archives.
@@ -87,3 +88,13 @@ function bepduc_buying_advisor_assets(): void
     wp_enqueue_style('bepduc-buying-advisor', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
 }
 add_action('wp_enqueue_scripts', 'bepduc_buying_advisor_assets');
+
+/** Homepage styles only on the public front page. */
+function bepduc_homepage_assets(): void
+{
+    if (! is_front_page()) { return; }
+    $relative = 'assets/css/homepage.css';
+    $path = get_theme_file_path($relative);
+    wp_enqueue_style('bepduc-homepage', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
+}
+add_action('wp_enqueue_scripts', 'bepduc_homepage_assets');
