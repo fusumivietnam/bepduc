@@ -18,6 +18,13 @@ final class Plugin
     {
         add_filter('acf/settings/save_json', [self::class, 'acfSaveJsonPath']);
         add_filter('acf/settings/load_json', [self::class, 'acfLoadJsonPaths']);
+
+        // Catalogue setup is explicit: no database changes on activation/page views.
+        if (defined('WP_CLI') && WP_CLI) {
+            require_once BEPDUC_CORE_DIR . 'src/Catalog/Schema.php';
+            require_once BEPDUC_CORE_DIR . 'src/Catalog/Command.php';
+            \WP_CLI::add_command('bepduc catalog', \Bepduc\Core\Catalog\Command::class);
+        }
     }
 
     /**
