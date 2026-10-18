@@ -12,8 +12,8 @@
 .bd-catalogue-toolbar { min-height: 3.5rem; padding-bottom: 1rem; margin-bottom: 1.2rem; border-bottom: 1px solid var(--wp--preset--color--border); color: var(--wp--preset--color--muted); font-size: 0.875rem; }
 .bd-catalogue-toolbar select { min-height: 2.5rem; background-color: var(--wp--preset--color--surface); border: 1px solid var(--wp--preset--color--border); border-radius: 3px; padding: 0.35rem 0.65rem; color: var(--wp--preset--color--ink); }
 .bd-catalogue-empty { padding: 3rem 1.5rem; background: var(--wp--preset--color--surface); text-align: center; color: var(--wp--preset--color--muted); }
-.bd-catalogue-collection ul.wc-block-product-template,
-.bd-catalogue-collection ul.wp-block-woocommerce-product-template {
+.bd-catalogue-collection ul.wp-block-post-template,
+.bd-catalogue-collection ul.wp-block-post-template {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: clamp(0.75rem, 2vw, 2rem);
@@ -22,8 +22,8 @@
   margin: 0;
   padding: 0;
 }
-.bd-catalogue-collection ul.wc-block-product-template > li,
-.bd-catalogue-collection ul.wp-block-woocommerce-product-template > li { width: auto !important; min-width: 0; margin: 0 !important; }
+.bd-catalogue-collection ul.wp-block-post-template > li,
+.bd-catalogue-collection ul.wp-block-post-template > li { width: auto !important; min-width: 0; margin: 0 !important; }
 .bd-product-card { display: flex; flex-direction: column; height: 100%; min-width: 0; background: var(--wp--preset--color--surface); border: 1px solid var(--wp--preset--color--border); border-radius: 3px; overflow: hidden; transition: border-color 160ms ease, box-shadow 160ms ease; }
 .bd-product-card:hover { border-color: #c4b9a8; box-shadow: 0 8px 26px rgb(24 23 20 / 0.065); }
 .bd-product-card .wp-block-woocommerce-product-image { margin: 0; aspect-ratio: 1 / 1; overflow: hidden; background-color: #f3f0e9; }
@@ -52,8 +52,8 @@
 .bd-catalogue-page .wp-block-query-pagination a { color: var(--wp--preset--color--ink); text-decoration: none; }
 .bd-catalogue-page .wp-block-query-pagination a:hover { color: var(--wp--preset--color--accent); }
 @media (max-width: 1100px) {
-  .bd-catalogue-collection ul.wc-block-product-template,
-  .bd-catalogue-collection ul.wp-block-woocommerce-product-template { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bd-catalogue-collection ul.wp-block-post-template,
+  .bd-catalogue-collection ul.wp-block-post-template { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 781px) {
   .bd-catalogue-layout { gap: 1.25rem; }
@@ -62,8 +62,8 @@
 }
 @media (max-width: 480px) {
   .bd-catalogue-page { padding-block: 1.5rem; }
-  .bd-catalogue-collection ul.wc-block-product-template,
-  .bd-catalogue-collection ul.wp-block-woocommerce-product-template { column-gap: 0.55rem; row-gap: 1.2rem; }
+  .bd-catalogue-collection ul.wp-block-post-template,
+  .bd-catalogue-collection ul.wp-block-post-template { column-gap: 0.55rem; row-gap: 1.2rem; }
   .bd-product-card__body { padding: 0.7rem; }
   .bd-product-card__title { min-height: 0; font-size: 0.86rem; }
   .bd-product-card .wp-block-woocommerce-product-button .wp-block-button__link { padding: 0.65rem 0.4rem; font-size: 0.71rem; }
