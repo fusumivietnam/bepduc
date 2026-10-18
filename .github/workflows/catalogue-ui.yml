@@ -146,7 +146,7 @@ jobs:
           print(source[idx+500:idx+3600].replace('\\n', ' ') if idx >= 0 else 'NO TOOLBAR')
           PY
           grep -Eo '<title[^>]*>[^<]+|<main[^>]*>|<h1[^>]*>[^<]+|bd-product-card|bd-catalogue-page|woocommerce-product-collection|catalogue.css' /tmp/shop.html | head -n 35 || true
-          for expected in 'bd-catalogue-page' 'bd-product-card' 'woocommerce-product-collection' 'catalogue.css' 'Demo'; do
+          for expected in 'bd-catalogue-page' 'bd-product-card' 'bd-catalogue-collection' 'catalogue.css' 'Demo'; do
             if ! grep -q "$expected" /tmp/shop.html; then
               echo "Missing frontend marker: $expected"
               head -c 3200 /tmp/shop.html
