@@ -1,0 +1,94 @@
+name: Browser visual QA
+
+on:
+  pull_request:
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - 'wp-content/plugins/bepduc-core/**'
+      - 'scripts/qa/**'
+      - 'playground/**'
+      - '.github/workflows/browser-visual-qa.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'wp-content/themes/bepduc/**'
+      - 'wp-content/plugins/bepduc-core/**'
+      - 'scripts/qa/**'
+      - 'playground/**'
+      - '.github/workflows/browser-visual-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PHP and locked public plugins
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+      - run: |
+          composer install --no-dev --prefer-dist --no-progress --no-interaction
+          curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /tmp/wp-cli.phar
+          chmod +x /tmp/wp-cli.phar
+          sudo mv /tmp/wp-cli.phar /usr/local/bin/wp
+      - name: Install disposable WordPress and demo catalogue
+        run: |
+          wp core download --path=/tmp/wordpress --allow-root
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306 --skip-check --allow-root
+          wp config set WP_ENVIRONMENT_TYPE local --type=constant --path=/tmp/wordpress --allow-root
+          wp core install --path=/tmp/wordpress --url=http://127.0.0.1:8017 --title='Bepduc Visual QA' --admin_user=admin --admin_password='CI-only-unpublished' --admin_email=devnull@example.com --skip-email --allow-root
+          cp -R wp-content/plugins/bepduc-core /tmp/wordpress/wp-content/plugins/bepduc-core
+          cp -R wp-content/plugins/woocommerce /tmp/wordpress/wp-content/plugins/woocommerce
+          cp -R wp-content/themes/bepduc /tmp/wordpress/wp-content/themes/bepduc
+          wp plugin activate woocommerce bepduc-core --path=/tmp/wordpress --allow-root
+          wp theme activate bepduc --path=/tmp/wordpress --allow-root
+          wp rewrite structure '/%postname%/' --path=/tmp/wordpress --allow-root
+          wp option update woocommerce_currency VND --path=/tmp/wordpress --allow-root
+          wp bepduc catalog sync --path=/tmp/wordpress --allow-root
+          wp bepduc seed products --path=/tmp/wordpress --allow-root
+          for slug in shop so-sanh tu-van-chon-bep; do
+            wp post create --post_type=page --post_status=publish --post_name="$slug" --post_title="$slug" --path=/tmp/wordpress --allow-root
+          done
+          SHOP_ID="$(wp post list --post_type=page --name=shop --field=ID --path=/tmp/wordpress --allow-root)"
+          wp option update woocommerce_shop_page_id "$SHOP_ID" --path=/tmp/wordpress --allow-root
+          wp rewrite flush --hard --path=/tmp/wordpress --allow-root
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Responsive screenshots and browser assertions
+        run: |
+          set -euo pipefail
+          wp server --host=127.0.0.1 --port=8017 --path=/tmp/wordpress --allow-root >/tmp/wp-visual.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8017/shop/ -o /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/qa/visual-qa.cjs
+      - name: Upload QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bepduc-responsive-screenshots
+          path: artifacts/visual-qa/
+          if-no-files-found: warn
+          retention-days: 7
