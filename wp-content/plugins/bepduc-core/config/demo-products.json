@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "marker": "bepduc-demo-v1",
+  "brands": [
+    {
+      "slug": "demo-atelier",
+      "name": "Demo Atelier"
+    },
+    {
+      "slug": "demo-studio",
+      "name": "Demo Studio"
+    }
+  ],
+  "terms": {
+    "series": [
+      {
+        "slug": "studio",
+        "name": "Studio"
+      },
+      {
+        "slug": "essential",
+        "name": "Essential"
+      },
+      {
+        "slug": "signature",
+        "name": "Signature"
+      }
+    ],
+    "installation": [
+      {
+        "slug": "lap-am",
+        "name": "Lắp âm"
+      },
+      {
+        "slug": "doc-lap",
+        "name": "Độc lập"
+      }
+    ],
+    "width": [
+      {
+        "slug": "300-mm",
+        "name": "300 mm"
+      },
+      {
+        "slug": "450-mm",
+        "name": "450 mm"
+      },
+      {
+        "slug": "600-mm",
+        "name": "600 mm"
+      },
+      {
+        "slug": "700-mm",
+        "name": "700 mm"
+      },
+      {
+        "slug": "780-mm",
+        "name": "780 mm"
+      },
+      {
+        "slug": "900-mm",
+        "name": "900 mm"
+      }
+    ],
+    "color": [
+      {
+        "slug": "den",
+        "name": "Đen"
+      },
+      {
+        "slug": "inox",
+        "name": "Inox"
+      },
+      {
+        "slug": "trang",
+        "name": "Trắng"
+      }
+    ],
+    "capacity": [
+      {
+        "slug": "large",
+        "name": "Dung tích lớn"
+      }
+    ],
+    "energy_class": [
+      {
+        "slug": "a-plus",
+        "name": "A+"
+      }
+    ],
+    "noise": [
+      {
+        "slug": "low",
+        "name": "Độ ồn thấp"
+      }
+    ]
+  },
+  "products": [
+    {
+      "sku": "BD-DEMO-001",
+      "title": "[DEMO] Bếp từ âm 2 vùng Studio 60",
+      "category": "bep-tu",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "16900000",
+      "stock_quantity": 4,
+      "featured": true,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "den"
+      }
+    },
+    {
+      "sku": "BD-DEMO-002",
+      "title": "[DEMO] Bếp từ âm 3 vùng Signature 78",
+      "category": "bep-tu",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "18600000",
+      "stock_quantity": 5,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "lap-am",
+        "width": "780-mm",
+        "color": "inox"
+      },
+      "sale_price": "16400000"
+    },
+    {
+      "sku": "BD-DEMO-003",
+      "title": "[DEMO] Bếp từ độc lập Essential 60",
+      "category": "bep-tu",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "20300000",
+      "stock_quantity": 6,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "600-mm",
+        "color": "trang"
+      }
+    },
+    {
+      "sku": "BD-DEMO-004",
+      "title": "[DEMO] Bếp từ mặt kính dài Signature 90",
+      "category": "bep-tu",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "22000000",
+      "stock_quantity": 7,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "doc-lap",
+        "width": "900-mm",
+        "color": "inox",
+        "capacity": "large"
+      }
+    },
+    {
+      "sku": "BD-DEMO-005",
+      "title": "[DEMO] Máy rửa bát âm toàn phần Studio 60",
+      "category": "may-rua-bat",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "21900000",
+      "stock_quantity": 8,
+      "featured": true,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "den",
+        "noise": "low"
+      }
+    },
+    {
+      "sku": "BD-DEMO-006",
+      "title": "[DEMO] Máy rửa bát độc lập Essential 60",
+      "category": "may-rua-bat",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "23600000",
+      "stock_quantity": 0,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "600-mm",
+        "color": "trang",
+        "energy_class": "a-plus"
+      }
+    },
+    {
+      "sku": "BD-DEMO-007",
+      "title": "[DEMO] Máy rửa bát âm bán phần Signature 45",
+      "category": "may-rua-bat",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "25300000",
+      "stock_quantity": 10,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "lap-am",
+        "width": "450-mm",
+        "color": "den"
+      }
+    },
+    {
+      "sku": "BD-DEMO-008",
+      "title": "[DEMO] Máy hút mùi âm tủ Studio 60",
+      "category": "may-hut-mui",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "9900000",
+      "stock_quantity": 11,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "inox",
+        "capacity": "large"
+      }
+    },
+    {
+      "sku": "BD-DEMO-009",
+      "title": "[DEMO] Máy hút mùi áp tường Essential 90",
+      "category": "may-hut-mui",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "11600000",
+      "stock_quantity": 3,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "900-mm",
+        "color": "trang"
+      },
+      "sale_price": "9400000"
+    },
+    {
+      "sku": "BD-DEMO-010",
+      "title": "[DEMO] Máy hút mùi đảo Signature 90",
+      "category": "may-hut-mui",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "13300000",
+      "stock_quantity": 4,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "doc-lap",
+        "width": "900-mm",
+        "color": "inox",
+        "noise": "low"
+      }
+    },
+    {
+      "sku": "BD-DEMO-011",
+      "title": "[DEMO] Lò nướng âm tủ Studio 60",
+      "category": "lo-nuong",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "19500000",
+      "stock_quantity": 5,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "den"
+      }
+    },
+    {
+      "sku": "BD-DEMO-012",
+      "title": "[DEMO] Lò nướng âm tủ Signature 60 hơi nước kết hợp thiết kế tối giản cho không gian bếp hiện đại",
+      "category": "lo-nuong",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "21200000",
+      "stock_quantity": 6,
+      "featured": true,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "trang",
+        "capacity": "large",
+        "energy_class": "a-plus"
+      }
+    },
+    {
+      "sku": "BD-DEMO-013",
+      "title": "[DEMO] Lò nướng đối lưu Essential 60",
+      "category": "lo-nuong",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "22900000",
+      "stock_quantity": 7,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "600-mm",
+        "color": "den"
+      },
+      "sale_price": "20700000"
+    },
+    {
+      "sku": "BD-DEMO-014",
+      "title": "[DEMO] Lò vi sóng âm tủ Studio 45",
+      "category": "lo-vi-song",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "11900000",
+      "stock_quantity": 8,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "450-mm",
+        "color": "inox"
+      }
+    },
+    {
+      "sku": "BD-DEMO-015",
+      "title": "[DEMO] Lò vi sóng độc lập Essential 25",
+      "category": "lo-vi-song",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "13600000",
+      "stock_quantity": 9,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "600-mm",
+        "color": "trang",
+        "noise": "low"
+      }
+    },
+    {
+      "sku": "BD-DEMO-016",
+      "title": "[DEMO] Tủ lạnh âm tủ Signature 60",
+      "category": "tu-lanh",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "25900000",
+      "stock_quantity": 10,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "inox",
+        "capacity": "large"
+      }
+    },
+    {
+      "sku": "BD-DEMO-017",
+      "title": "[DEMO] Tủ lạnh độc lập Studio 70",
+      "category": "tu-lanh",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "27600000",
+      "stock_quantity": 11,
+      "featured": false,
+      "visibility": "hidden",
+      "attributes": {
+        "series": "studio",
+        "installation": "doc-lap",
+        "width": "700-mm",
+        "color": "den"
+      }
+    },
+    {
+      "sku": "BD-DEMO-018",
+      "title": "[DEMO] Tủ lạnh hai cánh Essential 90",
+      "category": "tu-lanh",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "29300000",
+      "stock_quantity": 3,
+      "featured": true,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "900-mm",
+        "color": "trang",
+        "energy_class": "a-plus"
+      }
+    },
+    {
+      "sku": "BD-DEMO-019",
+      "title": "[DEMO] Máy pha cà phê âm tủ Studio 60",
+      "category": "may-pha-ca-phe",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "21900000",
+      "stock_quantity": 4,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "den"
+      }
+    },
+    {
+      "sku": "BD-DEMO-020",
+      "title": "[DEMO] Máy pha cà phê tự động Essential",
+      "category": "may-pha-ca-phe",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "23600000",
+      "stock_quantity": 5,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "450-mm",
+        "color": "inox",
+        "capacity": "large",
+        "noise": "low"
+      },
+      "sale_price": "21400000"
+    },
+    {
+      "sku": "BD-DEMO-021",
+      "title": "[DEMO] Chậu rửa inox âm bàn Studio 60",
+      "category": "chau-rua",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "6900000",
+      "stock_quantity": 6,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "studio",
+        "installation": "lap-am",
+        "width": "600-mm",
+        "color": "inox"
+      }
+    },
+    {
+      "sku": "BD-DEMO-022",
+      "title": "[DEMO] Chậu rửa đá Signature 78",
+      "category": "chau-rua",
+      "brand": "demo-studio",
+      "type": "simple",
+      "regular_price": "8600000",
+      "stock_quantity": 7,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "doc-lap",
+        "width": "780-mm",
+        "color": "inox"
+      }
+    },
+    {
+      "sku": "BD-DEMO-023",
+      "title": "[DEMO] Vòi rửa nóng lạnh Essential",
+      "category": "voi-rua",
+      "brand": "demo-atelier",
+      "type": "simple",
+      "regular_price": "3900000",
+      "stock_quantity": 8,
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "essential",
+        "installation": "doc-lap",
+        "width": "300-mm",
+        "color": "den"
+      }
+    },
+    {
+      "sku": "BD-DEMO-024",
+      "title": "[DEMO] Vòi rửa kéo dây Signature hai màu",
+      "category": "voi-rua",
+      "brand": "demo-studio",
+      "type": "variable",
+      "featured": false,
+      "visibility": "visible",
+      "attributes": {
+        "series": "signature",
+        "installation": "doc-lap",
+        "width": "300-mm",
+        "color": [
+          "den",
+          "trang"
+        ],
+        "capacity": "large",
+        "energy_class": "a-plus"
+      },
+      "variants": [
+        {
+          "sku": "BD-DEMO-024-BLK",
+          "color": "den",
+          "regular_price": "5500000",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "BD-DEMO-024-WHT",
+          "color": "trang",
+          "regular_price": "5900000",
+          "stock_quantity": 0
+        }
+      ]
+    }
+  ]
+}
