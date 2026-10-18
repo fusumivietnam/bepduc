@@ -79,10 +79,7 @@ jobs:
                 "woocommerce/product-price",
                 "woocommerce/product-stock-indicator",
                 "woocommerce/product-button",
-                "woocommerce/product-filters",
-                "woocommerce/product-filter-price",
-                "woocommerce/product-filter-status",
-                "woocommerce/product-filter-taxonomy",
+                "bepduc/catalogue-controls",
             ] as $name) {
                 if (!$registry->is_registered($name)) {
                     WP_CLI::error("Missing block: " . $name);
@@ -100,7 +97,7 @@ jobs:
                 }
             }
             $resultPattern = WP_Block_Patterns_Registry::get_instance()->get_registered("bepduc/catalogue-results");
-            if (strpos($resultPattern["content"], "product-filter-status") === false
+            if (strpos($resultPattern["content"], "bepduc/catalogue-controls") === false
                 || strpos($resultPattern["content"], "bd-product-card") === false) {
                 WP_CLI::error("Shared results pattern has missing native blocks");
             }
@@ -136,7 +133,7 @@ jobs:
           source = open('/tmp/shop.html', encoding='utf-8').read()
           for marker in ['bd-catalogue-page', 'bd-catalogue-layout', 'bd-catalogue-collection',
                          'wp-block-query', 'bd-product-card', 'bd-catalogue-toolbar',
-                         'Lọc sản phẩm', '[DEMO]', 'Không tìm thấy sản phẩm']:
+                         'bd-catalogue-form', '[DEMO]', 'Không tìm thấy sản phẩm']:
               index = source.find(marker)
               print(f"{marker}: count={source.count(marker)} first={index}")
               if index >= 0:
