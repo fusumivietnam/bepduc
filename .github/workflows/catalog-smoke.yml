@@ -1,0 +1,97 @@
+name: WooCommerce catalogue schema smoke test
+
+on:
+  pull_request:
+    paths:
+      - 'wp-content/plugins/bepduc-core/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/catalog-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'wp-content/plugins/bepduc-core/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - '.github/workflows/catalog-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Validate manifest and install locked WooCommerce
+        run: |
+          python -m json.tool wp-content/plugins/bepduc-core/config/catalog.json > /dev/null
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
+          test -f wp-content/plugins/woocommerce/woocommerce.php
+
+      - name: Install WP-CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /tmp/wp-cli.phar
+          chmod +x /tmp/wp-cli.phar
+          sudo mv /tmp/wp-cli.phar /usr/local/bin/wp
+
+      - name: Install isolated WordPress
+        run: |
+          wp core download --path=/tmp/wordpress --allow-root
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306 --skip-check --allow-root
+          wp config set WP_ENVIRONMENT_TYPE local --type=constant --path=/tmp/wordpress --allow-root
+          wp core install --path=/tmp/wordpress --url=http://localhost --title='Catalogue smoke' --admin_user=admin --admin_password='ci-test-only' --admin_email=devnull@example.com --skip-email --allow-root
+          cp -R wp-content/plugins/bepduc-core /tmp/wordpress/wp-content/plugins/bepduc-core
+          cp -R wp-content/plugins/woocommerce /tmp/wordpress/wp-content/plugins/woocommerce
+          wp plugin activate woocommerce bepduc-core --path=/tmp/wordpress --allow-root
+
+      - name: Verify initial failure, repeatable sync and drift detection
+        run: |
+          set -euo pipefail
+          if wp bepduc catalog verify --path=/tmp/wordpress --allow-root; then
+            echo 'ERROR: verify unexpectedly passed with missing definitions'
+            exit 1
+          fi
+          wp bepduc catalog sync --path=/tmp/wordpress --allow-root
+          wp bepduc catalog verify --path=/tmp/wordpress --allow-root
+          wp bepduc catalog sync --path=/tmp/wordpress --allow-root
+          wp bepduc catalog verify --path=/tmp/wordpress --allow-root
+          wp eval '
+            $manifest = json_decode(file_get_contents(WP_PLUGIN_DIR . "/bepduc-core/config/catalog.json"), true);
+            foreach ($manifest["categories"] as $entry) {
+                if (!get_term_by("slug", $entry["slug"], "product_cat")) { exit(1); }
+            }
+            if (count(wc_get_attribute_taxonomies()) !== count($manifest["attributes"])) { exit(2); }
+            if (!taxonomy_exists("product_brand")) { exit(3); }
+            if (wp_count_posts("product")->publish > 0) { exit(4); }
+          ' --path=/tmp/wordpress --allow-root
+          wp eval '
+            $term = get_term_by("slug", "bep-tu", "product_cat");
+            wp_update_term($term->term_id, "product_cat", ["name" => "Drift test"]);
+          ' --path=/tmp/wordpress --allow-root
+          if wp bepduc catalog verify --path=/tmp/wordpress --allow-root; then
+            echo 'ERROR: verify missed drifted category name'
+            exit 1
+          fi
