@@ -1,0 +1,77 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "preferredVersions": {
+    "php": "8.3",
+    "wp": "latest"
+  },
+  "landingPage": "/shop/",
+  "login": true,
+  "siteOptions": {
+    "blogname": "Bếp Đức — Demo (dữ liệu giả lập)",
+    "blog_public": 0,
+    "woocommerce_currency": "VND"
+  },
+  "steps": [
+    {
+      "step": "defineWpConfigConsts",
+      "consts": {
+        "WP_ENVIRONMENT_TYPE": "local",
+        "WP_DEBUG": true
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "url",
+        "url": "https://downloads.wordpress.org/plugin/woocommerce.11.2.1.zip"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "git:directory",
+        "url": "https://github.com/fusumivietnam/bepduc",
+        "ref": "main",
+        "refType": "branch",
+        "path": "wp-content/plugins/bepduc-core"
+      },
+      "options": {
+        "activate": true,
+        "targetFolderName": "bepduc-core"
+      }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "git:directory",
+        "url": "https://github.com/fusumivietnam/bepduc",
+        "ref": "main",
+        "refType": "branch",
+        "path": "wp-content/themes/bepduc"
+      },
+      "options": {
+        "activate": true,
+        "targetFolderName": "bepduc"
+      }
+    },
+    {
+      "step": "wp-cli",
+      "command": "wp rewrite structure '/%postname%/'"
+    },
+    {
+      "step": "wp-cli",
+      "command": "wp bepduc catalog sync"
+    },
+    {
+      "step": "wp-cli",
+      "command": "wp bepduc seed products"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php\nrequire '/wordpress/wp-load.php';\nforeach (['shop'=>'Shop','so-sanh'=>'So sánh','tu-van-chon-bep'=>'Tư vấn chọn bếp'] as $slug=>$title) {\n $page=get_page_by_path($slug);\n $id=$page ? $page->ID : wp_insert_post(['post_type'=>'page','post_status'=>'publish','post_title'=>$title,'post_name'=>$slug]);\n if ($slug==='shop') update_option('woocommerce_shop_page_id',$id);\n}\nupdate_option('woocommerce_currency','VND');\n"
+    }
+  ]
+}
