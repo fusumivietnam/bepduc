@@ -61,6 +61,7 @@ jobs:
           wp rewrite structure '/%postname%/' --path=/tmp/wordpress --allow-root
           SHOP_ID="$(wp post create --post_type=page --post_status=publish --post_title=Shop --porcelain --path=/tmp/wordpress --allow-root)"
           wp option update woocommerce_shop_page_id "$SHOP_ID" --path=/tmp/wordpress --allow-root
+          wp rewrite flush --hard --path=/tmp/wordpress --allow-root
           wp option update woocommerce_currency VND --path=/tmp/wordpress --allow-root
           wp bepduc catalog sync --path=/tmp/wordpress --allow-root
           wp bepduc seed products --path=/tmp/wordpress --allow-root
