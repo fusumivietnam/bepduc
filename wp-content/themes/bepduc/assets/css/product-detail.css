@@ -1,0 +1,25 @@
+/* Product detail uses WooCommerce's native gallery, variation and purchase blocks. */
+.bd-product-detail { padding-block: clamp(1.5rem,4vw,4rem); }
+.bd-product-detail__hero { gap: clamp(1.5rem,4vw,4.5rem); align-items: flex-start !important; margin-block: clamp(1.5rem,3vw,3rem); }
+.bd-product-detail__gallery { min-width: 0; background: var(--wp--preset--color--surface); }
+.bd-product-detail__purchase { min-width: 0; padding-block: .5rem; }
+.bd-product-detail__purchase .wp-block-post-title { margin: .5rem 0 1rem; font-size: clamp(1.6rem,2.5vw,2.6rem); line-height: 1.2; }
+.bd-product-detail__purchase .wp-block-woocommerce-product-price { font-size: clamp(1.25rem,2vw,1.85rem); font-weight: 650; margin-block: 1rem; }
+.bd-product-detail__purchase .wp-block-woocommerce-add-to-cart-form { margin-block: 1.5rem; }
+.bd-product-detail__purchase .quantity .qty { min-width: 4rem; min-height: 2.75rem; }
+.bd-product-detail__purchase .single_add_to_cart_button { min-height: 2.75rem; border-radius: 4px; padding: .8rem 1.5rem; cursor: pointer; }
+.bd-product-detail__purchase .variations select { max-width: 100%; min-height: 2.75rem; }
+.bd-product-installation { border: 1px solid var(--wp--preset--color--border); border-left: 4px solid var(--wp--preset--color--accent); padding: 1rem 1.25rem; background: var(--wp--preset--color--surface); margin-top: 2rem; }
+.bd-product-installation strong { display: block; margin-bottom: .5rem; }
+.bd-product-installation p { font-size: .9rem; line-height: 1.65; margin: 0; color: var(--wp--preset--color--muted); }
+.bd-product-detail__specifications { margin-block: clamp(2.5rem,5vw,5rem); }
+.bd-product-detail__specifications h2 { margin-bottom: 1.25rem; }
+.bd-product-specifications table { width: 100%; border-collapse: collapse; background: var(--wp--preset--color--surface); }
+.bd-product-specifications th,.bd-product-specifications td { padding: .8rem 1rem; border-bottom: 1px solid var(--wp--preset--color--border); text-align: left; vertical-align: top; }
+.bd-product-specifications th { width: 42%; color: var(--wp--preset--color--muted); font-weight: 500; }
+.bd-product-specifications td { font-weight: 600; overflow-wrap: anywhere; }
+.bd-product-detail__empty { color: var(--wp--preset--color--muted); }
+.bd-product-detail :is(a,button,select,input):focus-visible { outline: 3px solid var(--wp--preset--color--accent); outline-offset: 3px; }
+@media (max-width: 781px) { .bd-product-detail__hero { gap: 1.5rem; } .bd-product-detail__specifications th { width: 44%; } }
+@media (max-width: 480px) { .bd-product-specifications th,.bd-product-specifications td { padding: .75rem .5rem; font-size: .85rem; } }
+@media (prefers-reduced-motion: reduce) { .bd-product-detail * { scroll-behavior: auto !important; } }
