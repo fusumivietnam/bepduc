@@ -252,7 +252,7 @@ jobs:
           for expected in 'bd-home__hero' 'bd-home__categories' 'bd-home__products' 'bd-home__guides' 'homepage.css'; do
             grep -q "$expected" /tmp/home.html
           done
-          grep -q 'BD-DEMO' /tmp/home.html
+          grep -q '\[DEMO\]' /tmp/home.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
