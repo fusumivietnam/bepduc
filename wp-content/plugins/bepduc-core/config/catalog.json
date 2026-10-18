@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "categories": [
+    {
+      "slug": "bep-tu",
+      "name": "Bếp từ"
+    },
+    {
+      "slug": "may-rua-bat",
+      "name": "Máy rửa bát"
+    },
+    {
+      "slug": "may-hut-mui",
+      "name": "Máy hút mùi"
+    },
+    {
+      "slug": "lo-nuong",
+      "name": "Lò nướng"
+    },
+    {
+      "slug": "lo-vi-song",
+      "name": "Lò vi sóng"
+    },
+    {
+      "slug": "tu-lanh",
+      "name": "Tủ lạnh"
+    },
+    {
+      "slug": "may-pha-ca-phe",
+      "name": "Máy pha cà phê"
+    },
+    {
+      "slug": "chau-rua",
+      "name": "Chậu rửa"
+    },
+    {
+      "slug": "voi-rua",
+      "name": "Vòi rửa"
+    }
+  ],
+  "attributes": [
+    {
+      "slug": "series",
+      "label": "Dòng sản phẩm"
+    },
+    {
+      "slug": "installation",
+      "label": "Kiểu lắp đặt"
+    },
+    {
+      "slug": "width",
+      "label": "Chiều rộng danh định"
+    },
+    {
+      "slug": "height",
+      "label": "Chiều cao danh định"
+    },
+    {
+      "slug": "depth",
+      "label": "Chiều sâu danh định"
+    },
+    {
+      "slug": "capacity",
+      "label": "Dung tích / sức chứa"
+    },
+    {
+      "slug": "color",
+      "label": "Màu sắc"
+    },
+    {
+      "slug": "origin",
+      "label": "Xuất xứ"
+    },
+    {
+      "slug": "energy_class",
+      "label": "Nhãn năng lượng"
+    },
+    {
+      "slug": "noise",
+      "label": "Độ ồn"
+    },
+    {
+      "slug": "power",
+      "label": "Công suất"
+    },
+    {
+      "slug": "voltage",
+      "label": "Điện áp"
+    }
+  ]
+}
