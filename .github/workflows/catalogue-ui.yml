@@ -238,6 +238,13 @@ jobs:
           grep -q '303 See Other' /tmp/compare-headers
           grep -q 'So sánh sản phẩm này' /tmp/product-simple.html
           grep -q 'product-compare.css' /tmp/compare-two.html
+          curl -fsS http://127.0.0.1:8017/tu-van-chon-bep/ -o /tmp/advisor-empty.html
+          grep -q 'Chọn ít nhất một tiêu chí' /tmp/advisor-empty.html
+          curl -fsSG --data-urlencode 'bd_category=bep-tu' http://127.0.0.1:8017/tu-van-chon-bep/ -o /tmp/advisor-category.html
+          grep -q 'bd-advisor__result' /tmp/advisor-category.html
+          curl -fsSG --data-urlencode 'bd_budget=1' http://127.0.0.1:8017/tu-van-chon-bep/ -o /tmp/advisor-budget.html
+          grep -q 'Không tìm thấy sản phẩm' /tmp/advisor-budget.html
+          ! grep -q 'bd-advisor__result' /tmp/advisor-budget.html
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
