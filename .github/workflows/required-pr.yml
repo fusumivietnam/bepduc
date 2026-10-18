@@ -1,0 +1,76 @@
+name: Required PR checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  required:
+    name: required
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Check PHP syntax for owned application code
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            php -l "$file"
+          done < <(find wp-content/themes/bepduc wp-content/plugins/bepduc-core -type f -name '*.php' -print0)
+
+      - name: Validate Composer metadata against committed lock
+        run: |
+          test -s composer.lock
+          composer validate --no-check-publish --no-interaction
+
+      - name: Validate JSON manifests
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          files = [
+              Path("wp-content/themes/bepduc/theme.json"),
+              Path("wp-content/plugins/bepduc-core/config/catalog.json"),
+              Path("wp-content/plugins/bepduc-core/config/demo-products.json"),
+              Path("config/premium-plugins.json"),
+              Path("config/premium-plugins.schema.json"),
+              Path("composer.json"),
+              Path("composer.lock"),
+          ]
+          for path in files:
+              with path.open(encoding="utf-8") as handle:
+                  json.load(handle)
+              print("valid JSON:", path)
+          PY
+
+      - name: Validate shell script syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            bash -n "$file"
+          done < <(find scripts -type f -name '*.sh' -print0)
+
+      - name: Validate source/vendor boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^vendor/|^wp-admin/|^wp-includes/|^wp-content/plugins/woocommerce/|^wp-content/plugins/seo-by-rank-math/|^wp-content/plugins/fluent-smtp/|\.zip$)'; then
+            echo "Forbidden vendored or premium artifacts are tracked in Git" >&2
+            exit 1
+          fi
