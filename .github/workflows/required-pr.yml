@@ -51,11 +51,26 @@ jobs:
               Path("config/premium-plugins.schema.json"),
               Path("composer.json"),
               Path("composer.lock"),
+              Path("playground/blueprint.json"),
           ]
           for path in files:
               with path.open(encoding="utf-8") as handle:
                   json.load(handle)
               print("valid JSON:", path)
+          PY
+
+      - name: Check Playground site option contract
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          blueprint = json.loads(Path("playground/blueprint.json").read_text(encoding="utf-8"))
+          options = blueprint.get("siteOptions", {})
+          assert isinstance(options, dict), "siteOptions must be an object"
+          for key, value in options.items():
+              assert isinstance(value, str), f"siteOptions.{key} must be a string"
+          assert options.get("blog_public") == "0", "Demo must request search engine exclusion"
+          print("Playground siteOptions contract verified")
           PY
 
       - name: Validate shell script syntax
