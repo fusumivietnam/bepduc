@@ -65,7 +65,7 @@ function bepduc_catalogue_apply_filters(array $query, WP_Block $block): array
     $on_catalogue = ($shop_id > 0 && is_page($shop_id))
         || is_post_type_archive('product')
         || is_tax(['product_cat', 'product_brand']);
-    if (! $on_catalogue || ($block->context['query']['postType'] ?? '') !== 'product') {
+    if (! $on_catalogue || ($query['post_type'] ?? '') !== 'product') {
         return $query;
     }
 
