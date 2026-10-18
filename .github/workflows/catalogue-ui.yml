@@ -132,6 +132,16 @@ jobs:
           fi
           echo "Shop HTTP response length: $(wc -c < /tmp/shop.html)"
           echo 'Shop diagnostics:'
+          python3 - <<'PY'
+          source = open('/tmp/shop.html', encoding='utf-8').read()
+          for marker in ['bd-catalogue-page', 'bd-catalogue-layout', 'bd-catalogue-collection',
+                         'woocommerce-product-collection', 'bd-product-card', 'bd-catalogue-toolbar',
+                         'Lọc sản phẩm', '[DEMO]', 'Không tìm thấy sản phẩm']:
+              index = source.find(marker)
+              print(f"{marker}: count={source.count(marker)} first={index}")
+              if index >= 0:
+                  print(source[max(0, index-160):index+220].replace('\\n', ' ')[:400])
+          PY
           grep -Eo '<title[^>]*>[^<]+|<main[^>]*>|<h1[^>]*>[^<]+|bd-product-card|bd-catalogue-page|woocommerce-product-collection|catalogue.css' /tmp/shop.html | head -n 35 || true
           for expected in 'bd-catalogue-page' 'bd-product-card' 'woocommerce-product-collection' 'catalogue.css' 'Demo'; do
             if ! grep -q "$expected" /tmp/shop.html; then
