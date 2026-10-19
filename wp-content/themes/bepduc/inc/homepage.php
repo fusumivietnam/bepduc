@@ -18,19 +18,18 @@ function bepduc_render_homepage(): string
 
     $html = '<div class="bd-home">';
     $html .= '<section class="bd-home__hero"><div class="bd-home__hero-copy"><p class="bd-home__eyebrow">'
-        . esc_html__('BẾP ĐỨC · THIẾT BỊ BẾP CHỌN LỌC', 'bepduc') . '</p><h1>'
-        . esc_html__('Một căn bếp đẹp bắt đầu từ lựa chọn đúng.', 'bepduc') . '</h1><p>'
+        . esc_html__('THIẾT BỊ BẾP CAO CẤP', 'bepduc') . '</p><h1>'
+        . esc_html__('Nâng tầm trải nghiệm trong căn bếp Việt', 'bepduc') . '</h1><p>'
         . esc_html__('Khám phá thiết bị bếp, đối chiếu thông số thực tế và chọn giải pháp phù hợp với không gian của bạn.', 'bepduc')
         . '</p><div class="bd-home__actions"><a class="bd-home__primary" href="' . esc_url($shop) . '">'
         . esc_html__('Khám phá sản phẩm', 'bepduc') . '</a><a class="bd-home__secondary" href="'
         . esc_url($advisor) . '">' . esc_html__('Tư vấn chọn thiết bị', 'bepduc')
-        . '</a></div></div><div class="bd-home__hero-art" aria-hidden="true">'
-        . '<div class="bd-home__arch"><div class="bd-home__hob"><span></span><span></span><span></span><span></span></div></div>'
-        . '<span class="bd-home__art-label">FORM · FUNCTION · HOME</span></div></section>';
+        . '</a></div></div><div class="bd-home__hero-art" role="img" aria-label="' . esc_attr__('Vị trí ảnh không gian bếp, chờ ảnh được cấp phép', 'bepduc') . '">'
+        . '<span class="bd-home__photo-caption">' . esc_html__('Ảnh không gian bếp sẽ được cập nhật', 'bepduc') . '</span></div></section>';
 
     $html .= '<section class="bd-home__section" aria-labelledby="bd-home-categories"><div class="bd-home__section-head"><div>'
         . '<p class="bd-home__eyebrow">' . esc_html__('KHÁM PHÁ DANH MỤC', 'bepduc') . '</p>'
-        . '<h2 id="bd-home-categories">' . esc_html__('Tìm đúng thiết bị cho căn bếp', 'bepduc')
+        . '<h2 id="bd-home-categories">' . esc_html__('Danh mục thiết bị', 'bepduc')
         . '</h2></div><a href="' . esc_url($shop) . '">' . esc_html__('Xem tất cả sản phẩm →', 'bepduc') . '</a></div>';
     $html .= '<div class="bd-home__categories">';
     if (taxonomy_exists('product_cat')) {
@@ -48,7 +47,7 @@ function bepduc_render_homepage(): string
 
     $html .= '<section class="bd-home__section" aria-labelledby="bd-home-products"><div class="bd-home__section-head"><div>'
         . '<p class="bd-home__eyebrow">' . esc_html__('BỘ SƯU TẬP', 'bepduc') . '</p>'
-        . '<h2 id="bd-home-products">' . esc_html__('Thiết bị đáng khám phá', 'bepduc')
+        . '<h2 id="bd-home-products">' . esc_html__('Sản phẩm nổi bật', 'bepduc')
         . '</h2></div><a href="' . esc_url($shop) . '">' . esc_html__('Đến cửa hàng →', 'bepduc') . '</a></div>';
     $html .= '<div class="bd-home__products">';
     if (function_exists('wc_get_products')) {
@@ -65,7 +64,7 @@ function bepduc_render_homepage(): string
 
     $html .= '<section class="bd-home__guides"><div><p class="bd-home__eyebrow">'
         . esc_html__('CHỌN MUA CÓ CƠ SỞ', 'bepduc') . '</p><h2>'
-        . esc_html__('Rõ thông số. Dễ quyết định.', 'bepduc') . '</h2><p>'
+        . esc_html__('Chọn thiết bị dựa trên dữ liệu thực', 'bepduc') . '</h2><p>'
         . esc_html__('So sánh sản phẩm theo dữ liệu WooCommerce hoặc lọc theo loại thiết bị và ngân sách. Kiểm tra tài liệu nhà sản xuất trước khi lắp đặt.', 'bepduc')
         . '</p></div><div class="bd-home__guide-links"><a href="' . esc_url($compare) . '">'
         . esc_html__('So sánh thiết bị', 'bepduc') . ' <span aria-hidden="true">↗</span></a><a href="'
