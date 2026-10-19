@@ -253,6 +253,9 @@ jobs:
             grep -q "$expected" /tmp/home.html
           done
           grep -q '\[DEMO\]' /tmp/home.html
+          grep -q 'Ảnh không gian bếp sẽ được cập nhật' /tmp/home.html
+          grep -q 'Nâng tầm trải nghiệm' /tmp/home.html
+          if grep -q 'bd-home__hob' /tmp/home.html; then echo 'Unapproved CSS hob artwork still present'; exit 1; fi
           if grep -q 'Fatal error' /tmp/shop.html; then
             echo 'Fatal PHP error on shop page'
             exit 1
