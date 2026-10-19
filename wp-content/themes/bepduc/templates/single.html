@@ -1,11 +1,21 @@
 <!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
-
-<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|7","bottom":"var:preset|spacing|8"}}},"layout":{"type":"constrained"}} -->
-<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--7);padding-bottom:var(--wp--preset--spacing--8)">
-	<!-- wp:post-title {"level":1,"fontSize":"3xl"} /-->
-	<!-- wp:post-featured-image {"aspectRatio":"16/9"} /-->
-	<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
-</main>
+<!-- wp:group {"tagName":"main","align":"wide","className":"bd-article","layout":{"type":"constrained"}} -->
+<main class="wp-block-group alignwide bd-article">
+<!-- wp:group {"className":"bd-article__heading","layout":{"type":"constrained"}} -->
+<div class="wp-block-group bd-article__heading">
+<!-- wp:post-terms {"term":"category","prefix":"Cẩm nang / ","textColor":"accent"} /-->
+<!-- wp:post-title {"level":1} /-->
+<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap"}} --><div class="wp-block-group"><!-- wp:post-date {"textColor":"muted"} /--><!-- wp:post-author-name {"textColor":"muted"} /--></div><!-- /wp:group -->
+</div><!-- /wp:group -->
+<!-- wp:post-featured-image {"aspectRatio":"16/9","align":"wide","className":"bd-article__cover"} /-->
+<!-- wp:group {"className":"bd-article__body","layout":{"type":"constrained"}} -->
+<div class="wp-block-group bd-article__body">
+<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
+</div><!-- /wp:group -->
+<!-- wp:group {"className":"bd-article__end"} -->
+<div class="wp-block-group bd-article__end"><!-- wp:post-terms {"term":"post_tag","prefix":"Chủ đề: "} /-->
+<!-- wp:paragraph --><p>Thông tin kỹ thuật và điều kiện lắp đặt cần được kiểm tra với tài liệu nhà sản xuất trước khi áp dụng.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="/cam-nang/">← Xem các bài viết khác</a></p><!-- /wp:paragraph --></div>
 <!-- /wp:group -->
-
+</main><!-- /wp:group -->
 <!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->
