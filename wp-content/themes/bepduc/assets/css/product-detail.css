@@ -31,3 +31,15 @@
 .bd-product-advice dt { font-weight: 600; }
 .bd-product-advice dd { margin: 0; overflow-wrap: anywhere; }
 @media(max-width: 600px) { .bd-product-advice { padding: 1rem; } .bd-product-advice dl > div { grid-template-columns: 1fr; gap: .25rem; } }
+
+/* Approved Figma V1 / 03 PDP: neutral gallery, high hierarchy, native Woo purchase UI. */
+.bd-product-detail { background:var(--wp--preset--color--canvas); }
+.bd-product-detail__gallery { padding:clamp(.6rem,2vw,1.5rem);border:1px solid var(--wp--preset--color--border);border-radius:4px; }
+.bd-product-detail__purchase { padding:clamp(1rem,2.2vw,2rem);background:var(--wp--preset--color--surface);border:1px solid var(--wp--preset--color--border);border-radius:4px; }
+.bd-product-detail__purchase .wp-block-post-title { font-size:clamp(1.7rem,3vw,2.65rem);letter-spacing:-.025em; }
+.bd-product-detail__purchase .wp-block-woocommerce-product-price { color:var(--wp--preset--color--accent); }
+.bd-product-detail__purchase .single_add_to_cart_button { background:var(--wp--preset--color--accent);color:var(--wp--preset--color--surface);font-weight:600; }
+.bd-product-detail__specifications { padding:clamp(1rem,3vw,2.5rem);background:var(--wp--preset--color--surface);border:1px solid var(--wp--preset--color--border); }
+.bd-product-installation { border-left-color:var(--wp--preset--color--accent);background:var(--wp--preset--color--canvas); }
+.bd-product-detail .woocommerce-product-gallery img,.bd-product-detail__gallery img { max-width:100%;height:auto; }
+@media(max-width:781px){.bd-product-detail__purchase{padding:1rem}.bd-product-detail__gallery{padding:.75rem}}
