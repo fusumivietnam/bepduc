@@ -42,7 +42,7 @@ function bepduc_render_advisor(): string
         'bd_width' => ['Chiều rộng danh định', 'pa_width'],
     ];
     foreach ($groups as $field => [$label, $taxonomy]) {
-        $html .= '<label for="' . esc_attr($field) . '">' . esc_html($label) . '</label>';
+        $html .= '<div class="bd-advisor__field"><label for="' . esc_attr($field) . '">' . esc_html($label) . '</label>';
         $html .= '<select id="' . esc_attr($field) . '" name="' . esc_attr($field) . '"><option value="">'
             . esc_html__('Không giới hạn', 'bepduc') . '</option>';
         $terms = taxonomy_exists($taxonomy) ? get_terms(['taxonomy' => $taxonomy, 'hide_empty' => true]) : [];
@@ -52,11 +52,11 @@ function bepduc_render_advisor(): string
                     . selected($values[$field], $term->slug, false) . '>' . esc_html($term->name) . '</option>';
             }
         }
-        $html .= '</select>';
+        $html .= '</select></div>';
     }
-    $html .= '<label for="bd_budget">' . esc_html__('Ngân sách tối đa (₫)', 'bepduc')
+    $html .= '<div class="bd-advisor__field"><label for="bd_budget">' . esc_html__('Ngân sách tối đa (₫)', 'bepduc')
         . '</label><input id="bd_budget" type="number" min="0" step="1" inputmode="numeric" name="bd_budget" value="'
-        . esc_attr($values['bd_budget']) . '">';
+        . esc_attr($values['bd_budget']) . '"></div>';
     $html .= '<button type="submit">' . esc_html__('Tìm sản phẩm phù hợp', 'bepduc') . '</button></form>';
 
     // Avoid claiming a recommendation before visitors provide meaningful constraints.
