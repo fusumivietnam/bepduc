@@ -38,16 +38,25 @@ async function main() {
       }
       await context.close();
     }
-    // One real product detail page from seeded fixtures, with no hardcoded SKU slug.
-    const context = await browser.newContext({ viewport: viewports[1] });
-    const page = await context.newPage();
-    await page.goto(base + '/shop/', { waitUntil: 'domcontentloaded' });
-    const url = await page.locator('.bd-product-card__title a').first().getAttribute('href');
-    if (!url) throw new Error('No product detail link found');
-    await page.goto(new URL(url, base).href, { waitUntil: 'domcontentloaded' });
-    await page.locator('.bd-product-detail').first().waitFor();
-    await page.screenshot({ path: path.join(out, 'product-detail-mobile-375.png'), fullPage: true });
-    await context.close();
+    // Validate and capture real single-product UI at every supported viewport.
+    for (const viewport of viewports) {
+      const context = await browser.newContext({ viewport, reducedMotion: 'reduce' });
+      const page = await context.newPage();
+      const errors = [];
+      page.on('pageerror', err => errors.push(err.message));
+      await page.goto(base + '/shop/', { waitUntil: 'domcontentloaded' });
+      const url = await page.locator('.bd-product-card__title a').first().getAttribute('href');
+      if (!url) throw new Error('No seeded product link on shop archive');
+      const response = await page.goto(new URL(url, base).href, { waitUntil: 'domcontentloaded' });
+      await page.locator('.bd-product-detail__gallery').first().waitFor();
+      await page.locator('.bd-product-detail__purchase').first().waitFor();
+      await page.screenshot({ path: path.join(out, 'product-detail-' + viewport.name + '.png'), fullPage: true });
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 3);
+      if (!response?.ok() || overflow || errors.length) {
+        failures.push({ route: 'product-detail', viewport: viewport.name, status: response?.status(), horizontalOverflow: overflow, errors });
+      }
+      await context.close();
+    }
   } finally {
     await browser.close();
   }
