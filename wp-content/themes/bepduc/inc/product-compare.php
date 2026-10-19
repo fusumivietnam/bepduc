@@ -114,7 +114,7 @@ function bepduc_render_product_compare(): string
         . '</p><form method="get" action="' . esc_url($url) . '" class="bd-compare__form">';
     // Separate inputs make keyboard selection accessible; names are encoded into URL by JS-free form handling.
     foreach ([0, 1, 2] as $index) {
-        $html .= '<label for="bd-compare-' . $index . '">'
+        $html .= '<div class="bd-compare__field"><label for="bd-compare-' . $index . '">'
             . esc_html(sprintf('Sản phẩm %d', $index + 1)) . '</label>';
         $html .= '<select id="bd-compare-' . $index . '" name="bd_product[]"><option value="">'
             . esc_html__('Chưa chọn', 'bepduc') . '</option>';
@@ -126,7 +126,7 @@ function bepduc_render_product_compare(): string
                 . selected($ids[$index] ?? 0, $item->get_id(), false)
                 . '>' . esc_html($item->get_name()) . '</option>';
         }
-        $html .= '</select>';
+        $html .= '</select></div>';
     }
     $html .= '<button type="submit">' . esc_html__('So sánh', 'bepduc') . '</button></form>';
 
