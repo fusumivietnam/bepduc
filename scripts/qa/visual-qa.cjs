@@ -32,6 +32,14 @@ async function main() {
         const response = await page.goto(base + target.route, { waitUntil: 'domcontentloaded', timeout: 45000 });
         await page.locator(target.selector).first().waitFor();
         await page.screenshot({ path: path.join(out, target.name + '-' + viewport.name + '.png'), fullPage: true });
+        if (target.name === 'compare') {
+          const fields = await page.locator('.bd-compare__field').count();
+          if (fields !== 3) errors.push('Expected three grouped comparison selectors, found ' + fields);
+        }
+        if (target.name === 'advisor') {
+          const fields = await page.locator('.bd-advisor__field').count();
+          if (fields !== 4) errors.push('Expected four grouped advisor fields, found ' + fields);
+        }
         const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 3);
         // Comparison is allowed to scroll horizontally *inside* its labeled table region, not body.
         if (!response?.ok() || horizontalOverflow || errors.length) {
