@@ -1,0 +1,25 @@
+/* Figma 03 editorial: typography, warm canvas and product-gallery spacing. */
+.bd-journal,.bd-article{padding-block:clamp(2rem,5vw,5rem);color:var(--wp--preset--color--ink)}
+.bd-journal__intro{padding:clamp(1.5rem,4vw,3rem);background:var(--wp--preset--color--surface);border:1px solid var(--wp--preset--color--border);margin-bottom:var(--wp--preset--spacing--7)}
+.bd-journal__intro h1{font-size:clamp(2rem,4vw,3.5rem);letter-spacing:-.035em;margin:.5rem 0}
+.bd-journal__intro p{max-width:66ch}
+.bd-journal__grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--wp--preset--spacing--5)}
+.bd-journal__grid>li{min-width:0;margin:0}
+.bd-journal__card{height:100%;background:var(--wp--preset--color--surface);border:1px solid var(--wp--preset--color--border);display:flex;flex-direction:column;gap:0}
+.bd-journal__thumb{aspect-ratio:16/10;background:var(--wp--preset--color--canvas);margin:0;overflow:hidden}
+.bd-journal__thumb img{height:100%;width:100%;object-fit:cover}
+.bd-journal__card-content{padding:var(--wp--preset--spacing--5);flex:1}
+.bd-journal__card-content .wp-block-post-title{line-height:1.3;font-size:clamp(1.125rem,1.5vw,1.5rem);overflow-wrap:anywhere;margin:.75rem 0}
+.bd-journal__card-content .wp-block-post-title a{color:var(--wp--preset--color--ink);text-decoration:none}
+.bd-journal__card-content .wp-block-post-excerpt{color:var(--wp--preset--color--muted);font-size:.9rem}
+.bd-journal__card-content .wp-block-post-excerpt__more-link{display:block;margin-top:1rem;color:var(--wp--preset--color--accent);font-weight:600}
+.bd-article__heading{max-width:960px;margin:0 auto var(--wp--preset--spacing--7)}
+.bd-article__heading .wp-block-post-title{font-size:clamp(2rem,4vw,3.5rem);letter-spacing:-.035em;line-height:1.18}
+.bd-article__cover{background:var(--wp--preset--color--border);margin-block:var(--wp--preset--spacing--6)}
+.bd-article__cover img{width:100%;height:auto;max-height:600px;object-fit:contain}
+.bd-article__body{max-width:840px;margin:0 auto;padding:var(--wp--preset--spacing--6);background:var(--wp--preset--color--surface)}
+.bd-article__body :is(p,li){line-height:1.8}
+.bd-article__end{max-width:840px;margin:var(--wp--preset--spacing--6) auto;padding:var(--wp--preset--spacing--5);border-top:1px solid var(--wp--preset--color--border);font-size:.9rem;color:var(--wp--preset--color--muted)}
+.bd-journal :is(a,button):focus-visible,.bd-article :is(a,button):focus-visible{outline:3px solid var(--wp--preset--color--accent);outline-offset:3px}
+@media(max-width:880px){.bd-journal__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.bd-journal__grid{grid-template-columns:1fr}.bd-article__body{padding:1rem}}
