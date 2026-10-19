@@ -1,0 +1,28 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+<!-- wp:group {"tagName":"main","align":"wide","className":"bd-journal","layout":{"type":"constrained"}} -->
+<main class="wp-block-group alignwide bd-journal">
+<!-- wp:group {"className":"bd-journal__intro"} -->
+<div class="wp-block-group bd-journal__intro">
+<!-- wp:paragraph {"textColor":"accent"} --><p class="has-accent-color has-text-color">CẨM NANG BẾP ĐỨC</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":1} --><h1 class="wp-block-heading">Kiến thức cho căn bếp của bạn</h1><!-- /wp:heading -->
+<!-- wp:paragraph {"textColor":"muted"} --><p class="has-muted-color has-text-color">Khám phá kinh nghiệm lựa chọn, sử dụng và những điều cần kiểm tra trước khi lắp đặt thiết bị bếp.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:query {"queryId":0,"query":{"perPage":9,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"bd-journal__query"} -->
+<div class="wp-block-query bd-journal__query">
+<!-- wp:post-template {"className":"bd-journal__grid"} -->
+<!-- wp:group {"tagName":"article","className":"bd-journal__card"} -->
+<article class="wp-block-group bd-journal__card">
+<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","className":"bd-journal__thumb"} /-->
+<!-- wp:group {"className":"bd-journal__card-content"} -->
+<div class="wp-block-group bd-journal__card-content">
+<!-- wp:post-date {"fontSize":"xs","textColor":"muted"} /-->
+<!-- wp:post-title {"isLink":true,"level":2,"fontSize":"xl"} /-->
+<!-- wp:post-excerpt {"moreText":"Đọc bài viết →","excerptLength":26} /-->
+</div><!-- /wp:group -->
+</article><!-- /wp:group -->
+<!-- /wp:post-template -->
+<!-- wp:query-no-results --><!-- wp:paragraph --><p>Chưa có bài viết được xuất bản.</p><!-- /wp:paragraph --><!-- /wp:query-no-results -->
+<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->
+</div><!-- /wp:query -->
+</main><!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

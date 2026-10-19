@@ -98,3 +98,13 @@ function bepduc_homepage_assets(): void
     wp_enqueue_style('bepduc-homepage', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
 }
 add_action('wp_enqueue_scripts', 'bepduc_homepage_assets');
+
+/** Editorial assets for the posts index and native blog posts. */
+function bepduc_editorial_assets(): void
+{
+    if (! is_home() && ! is_singular('post')) { return; }
+    $relative = 'assets/css/editorial.css';
+    $path = get_theme_file_path($relative);
+    wp_enqueue_style('bepduc-editorial', get_theme_file_uri($relative), [], is_file($path) ? (string) filemtime($path) : '0.1.0');
+}
+add_action('wp_enqueue_scripts', 'bepduc_editorial_assets');

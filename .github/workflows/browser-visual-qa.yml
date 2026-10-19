@@ -63,7 +63,7 @@ jobs:
           wp option update woocommerce_currency VND --path=/tmp/wordpress --allow-root
           wp bepduc catalog sync --path=/tmp/wordpress --allow-root
           wp bepduc seed products --path=/tmp/wordpress --allow-root
-          for slug in shop so-sanh tu-van-chon-bep trang-chu; do
+          for slug in shop so-sanh tu-van-chon-bep trang-chu cam-nang; do
             wp post create --post_type=page --post_status=publish --post_name="$slug" --post_title="$slug" --path=/tmp/wordpress --allow-root
           done
           SHOP_ID="$(wp post list --post_type=page --name=shop --field=ID --path=/tmp/wordpress --allow-root)"
@@ -71,6 +71,9 @@ jobs:
           FRONT_ID="$(wp post list --post_type=page --name=trang-chu --field=ID --path=/tmp/wordpress --allow-root)"
           wp option update show_on_front page --path=/tmp/wordpress --allow-root
           wp option update page_on_front "$FRONT_ID" --path=/tmp/wordpress --allow-root
+          BLOG_ID="$(wp post list --post_type=page --name=cam-nang --field=ID --path=/tmp/wordpress --allow-root)"
+          wp option update page_for_posts "$BLOG_ID" --path=/tmp/wordpress --allow-root
+          wp post create --post_type=post --post_status=publish --post_title='Hướng dẫn chọn thiết bị bếp DEMO' --post_content='Nội dung mẫu cho kiểm thử giao diện bài viết, không phải tư vấn kỹ thuật.' --post_excerpt='Hướng dẫn thử nghiệm trên dữ liệu giả lập.' --post_name=huong-dan-chon-thiet-bi-demo --path=/tmp/wordpress --allow-root
           wp rewrite flush --hard --path=/tmp/wordpress --allow-root
       - name: Install Playwright Chromium
         run: |
