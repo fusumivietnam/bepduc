@@ -15,6 +15,8 @@ const urls = [
   { name: 'shop', route: '/shop/', selector: '.bd-catalogue-page' },
   { name: 'compare', route: '/so-sanh/', selector: '.bd-compare' },
   { name: 'advisor', route: '/tu-van-chon-bep/', selector: '.bd-advisor' },
+  { name: 'journal', route: '/cam-nang/', selector: '.bd-journal' },
+  { name: 'article', route: '/huong-dan-chon-thiet-bi-demo/', selector: '.bd-article' },
 ];
 async function main() {
   fs.mkdirSync(out, { recursive: true });
