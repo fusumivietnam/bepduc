@@ -1,0 +1,38 @@
+/* Non-production-only Bếp Đức component reference. Theme.json is authoritative. */
+.bd-ui-kit{max-width:1440px;margin:auto;padding:clamp(1.5rem,4vw,4rem);color:var(--wp--preset--color--ink)}
+.bd-ui-kit__intro{padding:2rem;background:var(--wp--preset--color--surface);border:1px solid var(--wp--preset--color--border)}
+.bd-ui-kit__intro h1{font-size:clamp(2rem,4vw,3.5rem);margin:.5rem 0;letter-spacing:-.035em}
+.bd-ui-kit__eyebrow{font-size:.75rem;letter-spacing:.14em;color:var(--wp--preset--color--accent);font-weight:600}
+.bd-ui-kit section{padding:1.75rem 0;border-bottom:1px solid var(--wp--preset--color--border)}
+.bd-ui-kit section h2{font-size:1.5rem;margin:0 0 1.5rem}
+.bd-ui-kit__swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.bd-ui-kit__swatch{min-width:0;background:var(--wp--preset--color--surface);border:1px solid var(--wp--preset--color--border);padding:.75rem;font-size:.85rem}
+.bd-ui-kit__swatch-color{display:block;height:64px;margin-bottom:.75rem;border:1px solid var(--wp--preset--color--border)}
+.bd-ui-kit__swatch-color--canvas{background:var(--wp--preset--color--canvas)}
+.bd-ui-kit__swatch-color--surface{background:var(--wp--preset--color--surface)}
+.bd-ui-kit__swatch-color--ink{background:var(--wp--preset--color--ink)}
+.bd-ui-kit__swatch-color--muted{background:var(--wp--preset--color--muted)}
+.bd-ui-kit__swatch-color--border{background:var(--wp--preset--color--border)}
+.bd-ui-kit__swatch-color--accent{background:var(--wp--preset--color--accent)}
+.bd-ui-kit__swatch-color--accent-dark{background:var(--wp--preset--color--accent-dark)}
+.bd-ui-kit__swatch-color--success{background:var(--wp--preset--color--success)}
+.bd-ui-kit__actions{display:flex;align-items:center;flex-wrap:wrap;gap:1rem}
+.bd-ui-kit__actions :is(a,button){border-radius:4px;padding:.85rem 1.1rem;font-size:.875rem;font-weight:600;text-decoration:none}
+.bd-ui-kit__actions button:disabled{opacity:.45;cursor:not-allowed}
+.bd-ui-kit__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;max-width:800px}
+.bd-ui-kit__fields label{display:block;font-size:.9rem;font-weight:600;margin-bottom:.5rem}
+.bd-ui-kit__fields :is(select,input){box-sizing:border-box;width:100%;min-height:48px;padding:.65rem;border:1px solid var(--wp--preset--color--border);color:var(--wp--preset--color--ink);background:var(--wp--preset--color--surface)}
+.bd-ui-kit__fields input:disabled{opacity:.5;background:var(--wp--preset--color--canvas)}
+.bd-ui-kit__product{width:min(100%,320px);padding:1rem}
+.bd-ui-kit__product>a,.bd-ui-kit__article>a{display:block;color:var(--wp--preset--color--ink);text-decoration:none}
+.bd-ui-kit__product-image,.bd-ui-kit__article-image{display:grid;place-items:center;aspect-ratio:1;background:var(--wp--preset--color--canvas)}
+.bd-ui-kit__product-image img{height:100%;width:100%;object-fit:contain}
+.bd-ui-kit__product-name{display:block;font-weight:600;margin-top:1rem}
+.bd-ui-kit__price{color:var(--wp--preset--color--accent);font-weight:600;margin-top:.75rem}
+.bd-ui-kit__stock{font-size:.85rem;color:var(--wp--preset--color--muted)}
+.bd-ui-kit__article{width:min(100%,360px);padding:1rem}
+.bd-ui-kit__article-image{aspect-ratio:16/10;margin-bottom:1rem}
+.bd-ui-kit__article-image img{width:100%;height:100%;object-fit:cover}
+.bd-ui-kit__article p{padding:0 1rem;color:var(--wp--preset--color--muted);font-size:.9rem}
+.bd-ui-kit :is(a,button,input,select):focus-visible{outline:3px solid var(--wp--preset--color--accent);outline-offset:3px}
+@media(max-width:650px){.bd-ui-kit__swatches{grid-template-columns:repeat(2,minmax(0,1fr))}.bd-ui-kit__fields{grid-template-columns:1fr}}
