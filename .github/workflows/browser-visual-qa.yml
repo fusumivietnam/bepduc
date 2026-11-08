@@ -94,6 +94,12 @@ jobs:
           done
           node scripts/qa/visual-qa.cjs
           node scripts/qa/visual-regression.cjs
+          # CI-only fixtures are created after screenshot candidates, so design baselines stay stable.
+          mkdir -p /tmp/wordpress/wp-content/mu-plugins
+          cp scripts/qa/checkout-mail-sink.php /tmp/wordpress/wp-content/mu-plugins/bepduc-qa-mail-sink.php
+          wp eval-file scripts/qa/checkout-fixture.php --path=/tmp/wordpress --allow-root
+          node scripts/qa/checkout-e2e.cjs
+          wp eval-file scripts/qa/assert-checkout.php --path=/tmp/wordpress --allow-root
       - name: Upload QA screenshots
         if: always()
         uses: actions/upload-artifact@v4
