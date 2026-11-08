@@ -48,6 +48,8 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /tmp/wp-cli.phar
           chmod +x /tmp/wp-cli.phar
           sudo mv /tmp/wp-cli.phar /usr/local/bin/wp
+      - name: Validate theme design registry
+        run: node scripts/qa/check-design-registry.cjs
       - name: Install disposable WordPress and demo catalogue
         run: |
           wp core download --path=/tmp/wordpress --allow-root
@@ -73,11 +75,12 @@ jobs:
           wp option update page_on_front "$FRONT_ID" --path=/tmp/wordpress --allow-root
           BLOG_ID="$(wp post list --post_type=page --name=cam-nang --field=ID --path=/tmp/wordpress --allow-root)"
           wp option update page_for_posts "$BLOG_ID" --path=/tmp/wordpress --allow-root
+          wp post create --post_type=page --post_status=publish --post_name=ui-kit --post_title='UI Kit (QA only)' --post_content='[bepduc_design_showcase]' --path=/tmp/wordpress --allow-root
           wp post create --post_type=post --post_status=publish --post_title='Hướng dẫn chọn thiết bị bếp DEMO' --post_content='Nội dung mẫu cho kiểm thử giao diện bài viết, không phải tư vấn kỹ thuật.' --post_excerpt='Hướng dẫn thử nghiệm trên dữ liệu giả lập.' --post_name=huong-dan-chon-thiet-bi-demo --path=/tmp/wordpress --allow-root
           wp rewrite flush --hard --path=/tmp/wordpress --allow-root
       - name: Install Playwright Chromium
         run: |
-          npm install --no-save --no-package-lock playwright@1.56.1
+          npm install --no-save --no-package-lock playwright@1.56.1 pixelmatch@5.3.0 pngjs@7.0.0
           npx playwright install --with-deps chromium
       - name: Responsive screenshots and browser assertions
         run: |
@@ -90,6 +93,7 @@ jobs:
             sleep 1
           done
           node scripts/qa/visual-qa.cjs
+          node scripts/qa/visual-regression.cjs
       - name: Upload QA screenshots
         if: always()
         uses: actions/upload-artifact@v4

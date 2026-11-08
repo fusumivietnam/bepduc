@@ -17,6 +17,7 @@ const urls = [
   { name: 'advisor', route: '/tu-van-chon-bep/', selector: '.bd-advisor' },
   { name: 'journal', route: '/cam-nang/', selector: '.bd-journal' },
   { name: 'article', route: '/huong-dan-chon-thiet-bi-demo/', selector: '.bd-article' },
+  { name: 'ui-kit', route: '/ui-kit/', selector: '.bd-ui-kit' },
 ];
 async function main() {
   fs.mkdirSync(out, { recursive: true });
@@ -32,6 +33,11 @@ async function main() {
         const response = await page.goto(base + target.route, { waitUntil: 'domcontentloaded', timeout: 45000 });
         await page.locator(target.selector).first().waitFor();
         await page.screenshot({ path: path.join(out, target.name + '-' + viewport.name + '.png'), fullPage: true });
+        if (target.name === 'ui-kit') {
+          if (await page.locator('.bd-ui-kit__swatch').count() !== 8) errors.push('Expected 8 theme colors');
+          if (await page.locator('.bd-ui-kit__product').count() !== 1) errors.push('QA showcase must use a seeded WooCommerce product');
+          if (await page.locator('.bd-ui-kit__article').count() !== 1) errors.push('QA showcase must use a real WordPress post');
+        }
         if (target.name === 'compare') {
           const fields = await page.locator('.bd-compare__field').count();
           if (fields !== 3) errors.push('Expected three grouped comparison selectors, found ' + fields);
