@@ -1,6 +1,5 @@
 <?php
 /** Post-browser assertions against isolated WooCommerce database and mail sink. */
-declare(strict_types=1);
 if (! defined('ABSPATH') || wp_get_environment_type() !== 'local' || ! function_exists('wc_get_orders')) {
     throw new RuntimeException('Checkout assertions are restricted to local WooCommerce');
 }
