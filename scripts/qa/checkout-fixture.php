@@ -3,7 +3,6 @@
  * Disposable CI checkout fixture. Run ONLY against a WP_ENVIRONMENT_TYPE=local
  * database created by browser-visual-qa.yml. It does not alter production.
  */
-declare(strict_types=1);
 if (! defined('ABSPATH') || wp_get_environment_type() !== 'local' || ! function_exists('wc_get_product')) {
     throw new RuntimeException('Checkout fixture may run only on local WooCommerce');
 }
