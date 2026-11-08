@@ -10,6 +10,32 @@ const path = require('node:path');
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:8017';
 const out = process.env.QA_OUTPUT || 'artifacts/visual-qa';
 const email = 'qa-checkout@example.test';
+const viewports = [320, 375, 768, 1280];
+
+async function captureResponsive(page, name, selectors) {
+  for (const width of viewports) {
+    await page.setViewportSize({ width, height: 812 });
+    for (const selector of selectors) {
+      const control = page.locator(selector).first();
+      await control.waitFor({ state: 'visible', timeout: 15000 });
+      if (!(await control.isVisible())) throw new Error(name + ': missing ' + selector + ' at ' + width + 'px');
+    }
+    const geometry = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      viewport: document.documentElement.clientWidth
+    }));
+    if (geometry.scroll > geometry.viewport + 2) {
+      throw new Error(name + ': horizontal overflow at ' + width + 'px (' +
+        geometry.scroll + ' > ' + geometry.viewport + ')');
+    }
+    await page.screenshot({
+      path: path.join(out, 'checkout-' + name + '-' + width + '.png'),
+      fullPage: true
+    });
+  }
+  // Keep the single existing COD order journey at its original mobile width.
+  await page.setViewportSize({ width: 375, height: 812 });
+}
 
 async function main() {
   if (!/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(base)) {
@@ -29,7 +55,7 @@ async function main() {
     const cart = await page.goto(base + '/qa-cart/', { waitUntil: 'domcontentloaded' });
     if (!cart?.ok()) throw new Error('QA cart unavailable');
     await page.locator('.woocommerce-cart-form .cart_item').first().waitFor({ timeout: 20000 });
-    await page.screenshot({ path: path.join(out, 'checkout-cart-mobile-375.png'), fullPage: true });
+    await captureResponsive(page, 'cart', ['.woocommerce-cart-form .cart_item']);
 
     const checkout = await page.goto(base + '/qa-checkout/', { waitUntil: 'domcontentloaded' });
     if (!checkout?.ok()) throw new Error('QA checkout unavailable');
@@ -45,7 +71,7 @@ async function main() {
     const cod = page.locator('#payment_method_cod');
     await cod.waitFor({ state: 'attached', timeout: 15000 });
     if (!(await cod.isChecked())) await cod.check();
-    await page.screenshot({ path: path.join(out, 'checkout-form-mobile-375.png'), fullPage: true });
+    await captureResponsive(page, 'form', ['form.checkout', '#billing_first_name', '#billing_email', '#place_order']);
     await page.locator('#place_order').click();
     await page.waitForURL(/order-received/, { timeout: 45000 });
     const orderKey = new URL(page.url()).searchParams.get('key');
