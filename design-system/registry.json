@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "designMaster": "https://www.figma.com/design/9K2qcVZCJWBeW2gM7OOl5x",
+  "direction": "03 — Premium Product Gallery",
+  "tokensSource": "wp-content/themes/bepduc/theme.json",
+  "requiredTokens": {
+    "color": [
+      "canvas",
+      "surface",
+      "ink",
+      "muted",
+      "border",
+      "accent",
+      "accent-dark",
+      "success"
+    ],
+    "spacing": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "fontSize": [
+      "xs",
+      "sm",
+      "base",
+      "lg",
+      "xl",
+      "2xl",
+      "3xl",
+      "4xl"
+    ]
+  },
+  "components": [
+    {
+      "id": "button-primary",
+      "selector": ".bd-home__primary",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/homepage.css",
+      "states": [
+        "default",
+        "hover",
+        "focus-visible"
+      ],
+      "source": "Figma Button / Action"
+    },
+    {
+      "id": "button-secondary",
+      "selector": ".bd-home__secondary",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/homepage.css",
+      "states": [
+        "default",
+        "focus-visible"
+      ],
+      "source": "Figma Button / Action"
+    },
+    {
+      "id": "product-card",
+      "selector": ".bd-product-card",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/catalogue.css",
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "sale",
+        "out-of-stock",
+        "variable"
+      ],
+      "source": "Figma Product Card / State; WooCommerce is authoritative"
+    },
+    {
+      "id": "filter-control",
+      "selector": ".bd-catalogue-form",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/catalogue.css",
+      "states": [
+        "default",
+        "focus-visible"
+      ],
+      "source": "Figma Form Field / State"
+    },
+    {
+      "id": "product-gallery",
+      "selector": ".bd-product-detail__gallery",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/product-detail.css",
+      "states": [
+        "default"
+      ],
+      "source": "Figma Product Detail"
+    },
+    {
+      "id": "compare-form",
+      "selector": ".bd-compare__field",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/product-compare.css",
+      "states": [
+        "default",
+        "focus-visible"
+      ],
+      "source": "Figma Comparison"
+    },
+    {
+      "id": "advisor-form",
+      "selector": ".bd-advisor__field",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/buying-advisor.css",
+      "states": [
+        "default",
+        "focus-visible"
+      ],
+      "source": "Figma Buying Advisor"
+    },
+    {
+      "id": "article-card",
+      "selector": ".bd-journal__card",
+      "stylesheet": "wp-content/themes/bepduc/assets/css/editorial.css",
+      "states": [
+        "default",
+        "focus-visible"
+      ],
+      "source": "Figma Article Card"
+    },
+    {
+      "id": "site-header",
+      "selector": ".wp-block-navigation",
+      "stylesheet": "wp-content/themes/bepduc/style.css",
+      "states": [
+        "desktop",
+        "mobile"
+      ],
+      "source": "Figma Header — pending full instance reconciliation"
+    }
+  ],
+  "qa": {
+    "showcaseRoute": "/ui-kit/",
+    "allowedEnvironments": [
+      "local",
+      "development",
+      "staging"
+    ],
+    "viewports": [
+      320,
+      375,
+      768,
+      1280
+    ],
+    "baselineState": "candidate-only-until-human-approval"
+  }
+}
