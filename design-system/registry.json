@@ -93,7 +93,7 @@
     },
     {
       "id": "compare-form",
-      "selector": ".bd-compare__field",
+      "selector": ".bd-compare__form",
       "stylesheet": "wp-content/themes/bepduc/assets/css/product-compare.css",
       "states": [
         "default",
@@ -103,7 +103,7 @@
     },
     {
       "id": "advisor-form",
-      "selector": ".bd-advisor__field",
+      "selector": ".bd-advisor__form",
       "stylesheet": "wp-content/themes/bepduc/assets/css/buying-advisor.css",
       "states": [
         "default",
