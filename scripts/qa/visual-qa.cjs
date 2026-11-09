@@ -19,6 +19,57 @@ const urls = [
   { name: 'article', route: '/huong-dan-chon-thiet-bi-demo/', selector: '.bd-article' },
   { name: 'ui-kit', route: '/ui-kit/', selector: '.bd-ui-kit' },
 ];
+
+/**
+ * Focused keyboard + accessible-name smoke test (not a full WCAG audit).
+ * Native labels/ARIA naming and visible keyboard focus are checked on
+ * project-owned forms; WooCommerce internals are audited separately.
+ */
+async function auditFormAccessibility(page, scope, fieldSelector) {
+  const controls = page.locator(scope + ' ' + fieldSelector);
+  const submit = page.locator(scope + ' button[type="submit"], ' + scope + ' button:not([type])').first();
+  const count = await controls.count();
+  if (!count) throw new Error(scope + ': missing form controls');
+  if (!(await submit.count())) throw new Error(scope + ': missing submit button');
+  for (let i = 0; i < count; i++) {
+    const field = controls.nth(i);
+    const name = await field.evaluate(el => {
+      const labels = Array.from(el.labels || []).map(x => x.textContent.trim()).join(' ').trim();
+      const aria = el.getAttribute('aria-label') || '';
+      const labelledby = (el.getAttribute('aria-labelledby') || '').split(/\\s+/).filter(Boolean)
+        .map(id => document.getElementById(id)?.textContent?.trim() || '').join(' ');
+      return (labels || aria || labelledby).trim();
+    });
+    if (!name) throw new Error(scope + ': unlabeled field #' + (i + 1));
+  }
+  // Start at the top of the document and follow actual Tab navigation.
+  await page.evaluate(() => { document.activeElement?.blur?.(); document.body.focus(); });
+  const expected = count + 1;
+  const seen = new Set();
+  for (let attempt = 0; attempt < 120 && seen.size < expected; attempt++) {
+    await page.keyboard.press('Tab');
+    const state = await page.evaluate(({ scope, fieldSelector }) => {
+      const active = document.activeElement;
+      const root = document.querySelector(scope);
+      if (!active || !root?.contains(active)) return null;
+      const controls = [...root.querySelectorAll(fieldSelector)];
+      const submit = root.querySelector('button[type="submit"], button:not([type])');
+      const index = controls.indexOf(active);
+      if (index < 0 && active !== submit) return null;
+      const style = getComputedStyle(active);
+      const visibleFocus = (style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0) ||
+        (style.boxShadow !== 'none');
+      return { id: index >= 0 ? 'field-' + index : 'submit', visibleFocus };
+    }, { scope, fieldSelector });
+    if (!state) continue;
+    if (!state.visibleFocus) throw new Error(scope + ': keyboard focus is not visibly indicated on ' + state.id);
+    seen.add(state.id);
+  }
+  if (seen.size !== expected) {
+    throw new Error(scope + ': only ' + seen.size + '/' + expected + ' controls reached by Tab');
+  }
+}
+
 async function main() {
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch({ headless: true });
@@ -41,10 +92,12 @@ async function main() {
         if (target.name === 'compare') {
           const fields = await page.locator('.bd-compare__field').count();
           if (fields !== 3) errors.push('Expected three grouped comparison selectors, found ' + fields);
+          await auditFormAccessibility(page, '.bd-compare__form', '.bd-compare__field select');
         }
         if (target.name === 'advisor') {
           const fields = await page.locator('.bd-advisor__field').count();
           if (fields !== 4) errors.push('Expected four grouped advisor fields, found ' + fields);
+          await auditFormAccessibility(page, '.bd-advisor__form', '.bd-advisor__field select, .bd-advisor__field input');
         }
         const horizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 3);
         // Comparison is allowed to scroll horizontally *inside* its labeled table region, not body.
