@@ -19,6 +19,39 @@ const urls = [
   { name: 'article', route: '/huong-dan-chon-thiet-bi-demo/', selector: '.bd-article' },
   { name: 'ui-kit', route: '/ui-kit/', selector: '.bd-ui-kit' },
 ];
+
+// SEO smoke check against disposable fixture pages; no metadata is mutated.
+// WordPress core owns document titles and rel=canonical for singular entries.
+async function auditSeoMetadata(page, route, singular = false) {
+  const metadata = await page.evaluate(() => ({
+    title: document.title.trim(),
+    canonicals: Array.from(document.querySelectorAll('head link[rel~="canonical"]'))
+      .map(node => node.getAttribute('href'))
+  }));
+  if (!metadata.title || metadata.title.length < 3) {
+    throw new Error('SEO metadata: empty/short document title at ' + route);
+  }
+  if (singular) {
+    if (metadata.canonicals.length !== 1) {
+      throw new Error('SEO metadata: expected one canonical at ' + route +
+        ', found ' + metadata.canonicals.length);
+    }
+    let canonical;
+    try {
+      canonical = new URL(metadata.canonicals[0]);
+    } catch {
+      throw new Error('SEO metadata: malformed canonical at ' + route);
+    }
+    const pageUrl = new URL(page.url());
+    const normalize = pathname => pathname.replace(/\\/+$/, '') || '/';
+    if (canonical.origin !== pageUrl.origin ||
+        normalize(canonical.pathname) !== normalize(pageUrl.pathname) ||
+        canonical.search || canonical.hash) {
+      throw new Error('SEO metadata: unexpected canonical ' + canonical.href + ' at ' + pageUrl.href);
+    }
+  }
+}
+
 async function main() {
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch({ headless: true });
@@ -32,6 +65,9 @@ async function main() {
         page.on('pageerror', err => errors.push(err.message));
         const response = await page.goto(base + target.route, { waitUntil: 'domcontentloaded', timeout: 45000 });
         await page.locator(target.selector).first().waitFor();
+        if (['home', 'shop', 'article'].includes(target.name)) {
+          await auditSeoMetadata(page, target.route, target.name === 'article');
+        }
         await page.screenshot({ path: path.join(out, target.name + '-' + viewport.name + '.png'), fullPage: true });
         if (target.name === 'ui-kit') {
           if (await page.locator('.bd-ui-kit__swatch').count() !== 8) errors.push('Expected 8 theme colors');
@@ -66,6 +102,7 @@ async function main() {
       const response = await page.goto(new URL(url, base).href, { waitUntil: 'domcontentloaded' });
       await page.locator('.bd-product-detail__gallery').first().waitFor();
       await page.locator('.bd-product-detail__purchase').first().waitFor();
+      await auditSeoMetadata(page, 'product-detail', true);
       await page.screenshot({ path: path.join(out, 'product-detail-' + viewport.name + '.png'), fullPage: true });
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 3);
       if (!response?.ok() || overflow || errors.length) {
